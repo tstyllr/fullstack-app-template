@@ -1,0 +1,21 @@
+{
+   "name": "fullstack-app-template",
+   "type": "module",
+   "private": true,
+   "workspaces": [
+      "./backend",
+      "./frontend"
+   ],
+   "scripts": {
+      "dev": "bun run index.ts",
+      "format": "prettier --write .",
+      "prepare": "husky"
+   },
+   "devDependencies": {
+      "@types/bun": "latest",
+      "prettier": "^3.6.2"
+   },
+   "peerDependencies": {
+      "typescript": "^5"
+   }
+}
