@@ -32,6 +32,34 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Finder (MacOS) folder config
 .DS_Store
+*.pem
 
 # prisma
 backend/generated/
+
+# Expo (frontend)
+.expo/
+web-build/
+expo-env.d.ts
+
+# React Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# frontend generated folders
+/frontend/ios
+/frontend/android
+/frontend/app-example
