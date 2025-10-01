@@ -63,3 +63,4 @@ yarn-error.*
 /frontend/ios
 /frontend/android
 /frontend/app-example
+/frontend/.gitignore 
