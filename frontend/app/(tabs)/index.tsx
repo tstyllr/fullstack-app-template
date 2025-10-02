@@ -1,13 +1,32 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import { useAuth } from '@/components/contexts/auth-context';
+import { logout as logoutApi } from '@/lib/api/auth';
+import { Colors } from '@/constants/theme';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function HomeScreen() {
+   const { user, logout, refreshToken } = useAuth();
+   const colorScheme = useColorScheme();
+   const colors = Colors[colorScheme ?? 'light'];
+
+   const handleLogout = async () => {
+      try {
+         if (refreshToken) {
+            await logoutApi({ refreshToken });
+         }
+         await logout();
+      } catch (error: any) {
+         Alert.alert('错误', error.error || '登出失败');
+      }
+   };
+
    return (
       <ParallaxScrollView
          headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -21,6 +40,18 @@ export default function HomeScreen() {
          <ThemedView style={styles.titleContainer}>
             <ThemedText type="title">Welcome!</ThemedText>
             <HelloWave />
+         </ThemedView>
+         <ThemedView style={styles.userContainer}>
+            <ThemedText type="subtitle">用户信息</ThemedText>
+            <ThemedText>手机号: {user?.phone}</ThemedText>
+            <ThemedText>昵称: {user?.name || '未设置'}</ThemedText>
+            <ThemedText>管理员: {user?.isAdmin ? '是' : '否'}</ThemedText>
+            <TouchableOpacity
+               style={[styles.logoutButton, { backgroundColor: colors.tint }]}
+               onPress={handleLogout}
+            >
+               <ThemedText style={styles.logoutButtonText}>退出登录</ThemedText>
+            </TouchableOpacity>
          </ThemedView>
          <ThemedView style={styles.stepContainer}>
             <ThemedText type="subtitle">Step 1: Try it</ThemedText>
@@ -95,6 +126,24 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
+   },
+   userContainer: {
+      gap: 8,
+      marginBottom: 16,
+      padding: 16,
+      borderRadius: 8,
+   },
+   logoutButton: {
+      marginTop: 12,
+      height: 44,
+      borderRadius: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+   },
+   logoutButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: '600',
    },
    stepContainer: {
       gap: 8,

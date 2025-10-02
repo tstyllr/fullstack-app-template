@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 This is a monorepo fullstack application template with:
+
 - **Backend**: Express + TypeScript + MySQL + Prisma (Bun runtime)
 - **Frontend**: Expo (React Native) with file-based routing
 - **Tooling**: Bun for package management, Prettier for formatting, Husky for git hooks
@@ -76,6 +77,7 @@ src/
 ```
 
 **Key patterns:**
+
 - Controllers validate input with Zod schemas and delegate to services
 - Services contain business logic and call repositories
 - Repositories provide Prisma-based database access
@@ -84,12 +86,13 @@ src/
 ### Frontend Architecture (frontend/)
 
 Expo app with:
+
 - **app/**: File-based routing (Expo Router)
-  - `_layout.tsx`: Root layout
-  - `(tabs)/`: Tab-based navigation structure
-  - `modal.tsx`: Modal screens
+   - `_layout.tsx`: Root layout
+   - `(tabs)/`: Tab-based navigation structure
+   - `modal.tsx`: Modal screens
 - **components/**: Reusable UI components
-  - **ui/**: UI component library
+   - **ui/**: UI component library
 - **constants/**: App-wide constants (colors, themes, etc.)
 - **hooks/**: Custom React hooks
 - **assets/**: Images, fonts, etc.
@@ -105,6 +108,7 @@ Expo app with:
 ### Environment Variables
 
 **Backend** (.env.local):
+
 - `DATABASE_URL`: MySQL connection string
 - `JWT_PRIVATE_KEY`: Secret for JWT signing
 - `PORT`: Server port (default: 3000)
@@ -112,6 +116,7 @@ Expo app with:
 - Backend uses @dotenvx/dotenvx with .env.local files
 
 **Frontend**:
+
 - Standard Expo configuration via app.json
 
 ### Git Hooks
@@ -122,6 +127,7 @@ Expo app with:
 ## Authentication & Security
 
 Backend implements phone-based authentication:
+
 - JWT token authentication (Bearer scheme)
 - Verification codes sent via Tencent Cloud SMS
 - Password hashing with bcrypt
@@ -160,3 +166,4 @@ Backend implements phone-based authentication:
 - **Error Handling**: Centralized error handler in middleware, logs to logs/ directory
 - **Prisma Output**: Custom output path at backend/generated/prisma (not default node_modules)
 - **TypeScript**: Strict mode enabled, uses ESNext with bundler module resolution
+- Frontend is a Universal React Native applications (Android, iOS, and web) built with Expo
