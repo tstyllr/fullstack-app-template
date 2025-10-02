@@ -10,10 +10,3 @@ export type UserPayload = {
 export interface AuthRequest extends Request {
    user?: UserPayload;
 }
-
-export type JwtPayload = {
-   _id: string;
-   phone: string;
-   name?: string;
-   isAdmin: boolean;
-};

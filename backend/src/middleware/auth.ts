@@ -1,6 +1,6 @@
 import type { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import type { AuthRequest, JwtPayload } from '../types/auth.js';
+import type { AuthRequest, UserPayload } from '../types/auth.js';
 
 export function auth(req: AuthRequest, res: Response, next: NextFunction) {
    // Check if authentication is required
@@ -31,7 +31,7 @@ export function auth(req: AuthRequest, res: Response, next: NextFunction) {
       const decoded = jwt.verify(
          token,
          process.env.JWT_PRIVATE_KEY!
-      ) as JwtPayload;
+      ) as UserPayload;
       req.user = decoded;
       next();
    } catch (ex: any) {
