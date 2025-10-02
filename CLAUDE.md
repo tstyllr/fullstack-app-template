@@ -167,3 +167,4 @@ Backend implements phone-based authentication:
 - **Prisma Output**: Custom output path at backend/generated/prisma (not default node_modules)
 - **TypeScript**: Strict mode enabled, uses ESNext with bundler module resolution
 - Frontend is a Universal React Native applications (Android, iOS, and web) built with Expo
+- The frontend must be compatible with dark mode

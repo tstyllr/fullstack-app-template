@@ -117,12 +117,14 @@ export default function LoginScreen() {
                <ThemedText style={styles.title}>欢迎登录</ThemedText>
 
                {/* Phone Input */}
-               <View style={styles.inputContainer}>
+               <View
+                  style={[
+                     styles.phoneInputWrapper,
+                     { borderColor: colors.border },
+                  ]}
+               >
                   <TextInput
-                     style={[
-                        styles.input,
-                        { color: colors.text, borderColor: colors.border },
-                     ]}
+                     style={[styles.phoneInput, { color: colors.text }]}
                      placeholder="手机号"
                      placeholderTextColor={colors.tabIconDefault}
                      value={phone}
@@ -131,6 +133,27 @@ export default function LoginScreen() {
                      maxLength={11}
                      editable={!isLoading}
                   />
+                  {isCodeMode && (
+                     <TouchableOpacity
+                        style={[
+                           styles.inlineSendCodeButton,
+                           {
+                              backgroundColor: colors.tint,
+                              opacity: countdown > 0 || isLoading ? 0.5 : 1,
+                           },
+                        ]}
+                        onPress={handleSendCode}
+                        disabled={countdown > 0 || isLoading}
+                     >
+                        <ThemedText style={styles.inlineSendCodeButtonText}>
+                           {countdown > 0
+                              ? `${countdown}s`
+                              : codeSent
+                                ? '重发'
+                                : '发送'}
+                        </ThemedText>
+                     </TouchableOpacity>
+                  )}
                </View>
 
                {isCodeMode ? (
@@ -154,27 +177,6 @@ export default function LoginScreen() {
                            editable={!isLoading}
                         />
                      </View>
-
-                     {/* Send Code Button */}
-                     <TouchableOpacity
-                        style={[
-                           styles.sendCodeButton,
-                           {
-                              backgroundColor: colors.tint,
-                              opacity: countdown > 0 || isLoading ? 0.5 : 1,
-                           },
-                        ]}
-                        onPress={handleSendCode}
-                        disabled={countdown > 0 || isLoading}
-                     >
-                        <ThemedText style={styles.sendCodeButtonText}>
-                           {countdown > 0
-                              ? `${countdown}秒后重新发送`
-                              : codeSent
-                                ? '重新发送验证码'
-                                : '发送验证码'}
-                        </ThemedText>
-                     </TouchableOpacity>
 
                      {/* Login Button */}
                      <TouchableOpacity
@@ -293,16 +295,32 @@ const styles = StyleSheet.create({
       paddingHorizontal: 16,
       fontSize: 16,
    },
-   sendCodeButton: {
-      height: 50,
-      borderRadius: 8,
-      justifyContent: 'center',
+   phoneInputWrapper: {
+      flexDirection: 'row',
       alignItems: 'center',
       marginBottom: 16,
+      height: 50,
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingRight: 4,
    },
-   sendCodeButtonText: {
-      color: '#fff',
+   phoneInput: {
+      flex: 1,
+      height: 50,
+      paddingHorizontal: 16,
       fontSize: 16,
+   },
+   inlineSendCodeButton: {
+      height: 42,
+      marginLeft: 4,
+      paddingHorizontal: 16,
+      borderRadius: 6,
+      justifyContent: 'center',
+      alignItems: 'center',
+   },
+   inlineSendCodeButtonText: {
+      color: '#fff',
+      fontSize: 14,
       fontWeight: '600',
    },
    loginButton: {
@@ -320,6 +338,7 @@ const styles = StyleSheet.create({
    switchModeButton: {
       marginTop: 24,
       alignItems: 'center',
+      alignSelf: 'flex-end',
    },
    switchModeText: {
       fontSize: 14,
