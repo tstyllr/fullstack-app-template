@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
    View,
    TextInput,
@@ -14,6 +14,17 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useAuth } from '@/components/contexts/auth-context';
 import { sendCode, loginWithCode, loginWithPassword } from '@/lib/api/auth';
+import {
+   saveLoginMethod,
+   getLoginMethod,
+   savePhone,
+   getPhone,
+   savePassword,
+   getPassword,
+   saveRememberMe,
+   getRememberMe,
+   clearSavedCredentials,
+} from '@/lib/storage/token-storage';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Colors } from '@/constants/theme';
 
@@ -30,6 +41,39 @@ export default function LoginScreen() {
    const [isLoading, setIsLoading] = useState(false);
    const [codeSent, setCodeSent] = useState(false);
    const [countdown, setCountdown] = useState(0);
+   const [rememberMe, setRememberMe] = useState(false);
+
+   // Load saved login method and credentials on mount
+   useEffect(() => {
+      const loadSavedData = async () => {
+         // Load login method preference
+         const savedMethod = await getLoginMethod();
+         if (savedMethod !== null) {
+            setIsCodeMode(savedMethod);
+         }
+
+         // Load remember me preference
+         const remember = await getRememberMe();
+         setRememberMe(remember);
+
+         // Load saved credentials if remember me is enabled
+         if (remember) {
+            const savedPhone = await getPhone();
+            if (savedPhone) {
+               setPhone(savedPhone);
+            }
+
+            // Only load password on native platforms and in password mode
+            if (!savedMethod) {
+               const savedPassword = await getPassword();
+               if (savedPassword) {
+                  setPassword(savedPassword);
+               }
+            }
+         }
+      };
+      loadSavedData();
+   }, []);
 
    // Handle send verification code
    const handleSendCode = async () => {
@@ -78,6 +122,14 @@ export default function LoginScreen() {
             response.refreshToken,
             response.user
          );
+
+         // Save credentials if remember me is checked
+         if (rememberMe) {
+            await savePhone(phone);
+            await saveRememberMe(true);
+         } else {
+            await clearSavedCredentials();
+         }
       } catch (error: any) {
          Alert.alert('错误', error.error || '登录失败');
       } finally {
@@ -100,10 +152,30 @@ export default function LoginScreen() {
             response.refreshToken,
             response.user
          );
+
+         // Save credentials if remember me is checked
+         if (rememberMe) {
+            await savePhone(phone);
+            await savePassword(password); // Only saves on native, not web
+            await saveRememberMe(true);
+         } else {
+            await clearSavedCredentials();
+         }
       } catch (error: any) {
          Alert.alert('错误', error.error || '登录失败');
       } finally {
          setIsLoading(false);
+      }
+   };
+
+   // Handle remember me toggle
+   const handleRememberMeToggle = async () => {
+      const newValue = !rememberMe;
+      setRememberMe(newValue);
+
+      // Clear saved credentials when unchecking
+      if (!newValue) {
+         await clearSavedCredentials();
       }
    };
 
@@ -243,15 +315,44 @@ export default function LoginScreen() {
                   </>
                )}
 
+               {/* Remember Me Checkbox */}
+               <TouchableOpacity
+                  style={styles.rememberMeContainer}
+                  onPress={handleRememberMeToggle}
+                  disabled={isLoading}
+               >
+                  <View
+                     style={[
+                        styles.checkbox,
+                        {
+                           borderColor: colors.border,
+                           backgroundColor: rememberMe
+                              ? colors.tint
+                              : 'transparent',
+                        },
+                     ]}
+                  >
+                     {rememberMe && (
+                        <ThemedText style={styles.checkmark}>✓</ThemedText>
+                     )}
+                  </View>
+                  <ThemedText style={styles.rememberMeText}>
+                     记住{isCodeMode ? '手机号' : '账号密码'}
+                  </ThemedText>
+               </TouchableOpacity>
+
                {/* Switch Login Mode */}
                <TouchableOpacity
                   style={styles.switchModeButton}
                   onPress={() => {
-                     setIsCodeMode(!isCodeMode);
+                     const newMode = !isCodeMode;
+                     setIsCodeMode(newMode);
                      setCode('');
                      setPassword('');
                      setCodeSent(false);
                      setCountdown(0);
+                     // Save the new login method preference
+                     saveLoginMethod(newMode);
                   }}
                   disabled={isLoading}
                >
@@ -341,6 +442,28 @@ const styles = StyleSheet.create({
       alignSelf: 'flex-end',
    },
    switchModeText: {
+      fontSize: 14,
+   },
+   rememberMeContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 16,
+   },
+   checkbox: {
+      width: 20,
+      height: 20,
+      borderWidth: 2,
+      borderRadius: 4,
+      marginRight: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+   },
+   checkmark: {
+      color: '#fff',
+      fontSize: 14,
+      fontWeight: 'bold',
+   },
+   rememberMeText: {
       fontSize: 14,
    },
 });
