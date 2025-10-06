@@ -7,17 +7,19 @@ type ChatResponse = {
 
 // Public interface
 export const chatService = {
-   async sendMessage(
+   async generateTextWithDeepseekClient(
       prompt: string,
+      userId: number,
       previousResponseId?: string
    ): Promise<ChatResponse> {
-      const response = await llmClient.generateText({
+      const response = await llmClient.generateTextWithDeepseekClient({
          model: 'deepseek-chat',
          instructions: '',
          prompt,
          temperature: 0.2,
          maxTokens: 200,
          previousResponseId,
+         userId,
       });
       return {
          id: response.id,

@@ -78,7 +78,7 @@ export const authService = {
 
       // Generate token pair
       const tokens = await this.generateTokenPair({
-         _id: user.id.toString(),
+         id: user.id,
          phone: user.phone,
          name: user.name || undefined,
          isAdmin: user.isAdmin,
@@ -121,7 +121,7 @@ export const authService = {
 
       // Generate token pair
       const tokens = await this.generateTokenPair({
-         _id: user.id.toString(),
+         id: user.id,
          phone: user.phone,
          name: user.name || undefined,
          isAdmin: user.isAdmin,
@@ -188,7 +188,7 @@ export const authService = {
 
       // Generate new access token
       const accessToken = this.generateAuthToken({
-         _id: storedToken.user.id.toString(),
+         id: storedToken.user.id,
          phone: storedToken.user.phone,
          name: storedToken.user.name || undefined,
          isAdmin: storedToken.user.isAdmin,
@@ -208,7 +208,7 @@ export const authService = {
     * Generate access + refresh token pair
     */
    async generateTokenPair(payload: {
-      _id: string;
+      id: number;
       phone: string;
       name?: string;
       isAdmin: boolean;
@@ -220,7 +220,7 @@ export const authService = {
       const refreshTokenExpiry = (process.env.REFRESH_TOKEN_EXPIRY ||
          '30Days') as ms.StringValue;
       const refreshToken = jwt.sign(
-         { _id: payload._id },
+         { id: payload.id },
          process.env.JWT_REFRESH_SECRET!,
          {
             expiresIn: refreshTokenExpiry,
@@ -232,7 +232,7 @@ export const authService = {
 
       // Store refresh token in database
       await refreshTokenRepository.createRefreshToken(
-         parseInt(payload._id),
+         payload.id,
          refreshToken,
          expiresAt
       );
@@ -244,7 +244,7 @@ export const authService = {
     * Generate access token
     */
    generateAuthToken(payload: {
-      _id: string;
+      id: number;
       phone: string;
       name?: string;
       isAdmin: boolean;

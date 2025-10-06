@@ -9,7 +9,7 @@ export const userController = {
       }
 
       try {
-         const user = await userRepository.getUserById(parseInt(req.user._id));
+         const user = await userRepository.getUserById(req.user.id);
          if (!user) {
             return res.status(404).json({ error: 'User not found' });
          }

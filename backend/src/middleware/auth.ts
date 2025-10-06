@@ -1,10 +1,25 @@
 import type { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import type { AuthRequest, UserPayload } from '../types/auth.js';
+import { userRepository } from '@/repositories/user.repository.js';
+import { logger } from '@/utils/logger.js';
 
-export function auth(req: AuthRequest, res: Response, next: NextFunction) {
+export async function auth(
+   req: AuthRequest,
+   res: Response,
+   next: NextFunction
+) {
    // Check if authentication is required
    if (process.env.REQUIRES_AUTH === 'false') {
+      const user = await userRepository.getAdmin();
+      if (user) {
+         req.user = {
+            id: user.id,
+            phone: user.phone,
+            name: user.name || undefined,
+            isAdmin: user.isAdmin,
+         };
+      }
       return next();
    }
 

@@ -21,6 +21,7 @@ model User {
   updatedAt          DateTime             @updatedAt
   refreshTokens      RefreshToken[]
   verificationCodes  VerificationCode[]
+  chatMessages       ChatMessage[]
 
   @@map("users")
 }
@@ -51,4 +52,18 @@ model VerificationCode {
   @@index([phone])
   @@index([userId])
   @@map("verification_codes")
+}
+
+model ChatMessage {
+  id             String   @id @default(uuid())
+  conversationId String   @db.VarChar(36)
+  role           String   @db.VarChar(20) // 'system', 'user', 'assistant'
+  content        String   @db.Text
+  userId         Int
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+
+  @@index([conversationId])
+  @@index([userId])
+  @@map("chat_messages")
 }

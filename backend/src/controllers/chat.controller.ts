@@ -1,6 +1,7 @@
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 import { chatService } from '../services/chat.service';
 import z from 'zod';
+import type { AuthRequest } from '@/types/auth';
 
 // Implementation detail
 const chatSchema = z.object({
@@ -14,7 +15,11 @@ const chatSchema = z.object({
 
 // Public interface
 export const chatController = {
-   async sendMessage(req: Request, res: Response) {
+   async sendMessage(req: AuthRequest, res: Response) {
+      if (!req.user) {
+         return res.status(401).json({ error: 'Unauthorized' });
+      }
+
       const parseResult = chatSchema.safeParse(req.body);
       if (!parseResult.success) {
          res.status(400).json(parseResult.error.format());
@@ -23,8 +28,9 @@ export const chatController = {
 
       try {
          const { prompt, previousResponseId } = req.body;
-         const response = await chatService.sendMessage(
+         const response = await chatService.generateTextWithDeepseekClient(
             prompt,
+            req.user.id,
             previousResponseId
          );
 

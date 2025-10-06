@@ -25,6 +25,12 @@ export const userRepository = {
       });
    },
 
+   async getAdmin(): Promise<User | null> {
+      return await prisma.user.findFirst({
+         where: { isAdmin: true },
+      });
+   },
+
    async updateUser(
       id: number,
       data: { name?: string; password?: string }

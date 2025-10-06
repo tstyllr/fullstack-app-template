@@ -8,6 +8,7 @@
    "scripts": {
       "start": "bun run src/index.ts",
       "dev": "bun --watch run src/index.ts",
+      "type-check": "bunx tsc",
       "db:migrate": "bunx prisma migrate dev",
       "db:generate": "bunx prisma generate",
       "db:studio": "bunx prisma studio"
