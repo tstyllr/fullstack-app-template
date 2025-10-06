@@ -1,18 +1,13 @@
-import { llmClient } from '../llm/client';
-
-type ChatResponse = {
-   id: string;
-   message: string;
-};
+import { llmClient, type StreamEvent } from '../llm/client';
 
 // Public interface
 export const chatService = {
-   async generateTextWithDeepseekClient(
+   async *generateTextWithDeepseekClient(
       prompt: string,
       userId: number,
       previousResponseId?: string
-   ): Promise<ChatResponse> {
-      const response = await llmClient.generateTextWithDeepseekClient({
+   ): AsyncGenerator<StreamEvent> {
+      const stream = llmClient.generateTextWithDeepseekClient({
          model: 'deepseek-chat',
          instructions: '',
          prompt,
@@ -21,9 +16,9 @@ export const chatService = {
          previousResponseId,
          userId,
       });
-      return {
-         id: response.id,
-         message: response.text,
-      };
+
+      for await (const event of stream) {
+         yield event;
+      }
    },
 };

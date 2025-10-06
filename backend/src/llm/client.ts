@@ -16,13 +16,25 @@ type GenerateTextResult = {
    text: string;
 };
 
+export type StreamChunk = {
+   type: 'chunk';
+   text: string;
+};
+
+export type StreamDone = {
+   type: 'done';
+   responseId: string;
+};
+
+export type StreamEvent = StreamChunk | StreamDone;
+
 const deepseekClient = new OpenAI({
    baseURL: 'https://api.deepseek.com',
    apiKey: process.env.DEEPSEEK_API_KEY,
 });
 
 export const llmClient = {
-   async generateTextWithDeepseekClient({
+   async *generateTextWithDeepseekClient({
       model = 'deepseek-chat',
       prompt,
       instructions,
@@ -30,7 +42,7 @@ export const llmClient = {
       maxTokens = 300,
       previousResponseId,
       userId,
-   }: GenerateTextOptions): Promise<GenerateTextResult> {
+   }: GenerateTextOptions): AsyncGenerator<StreamEvent> {
       let conversationId: string;
       let messages: Array<
          | { role: 'system'; content: string }
@@ -77,15 +89,25 @@ export const llmClient = {
          content: prompt,
       });
 
-      // 调用 DeepSeek API
-      const completion = await deepseekClient.chat.completions.create({
+      // 调用 DeepSeek API with streaming
+      const stream = await deepseekClient.chat.completions.create({
          messages,
          model,
          temperature,
          max_completion_tokens: maxTokens,
+         stream: true,
       });
 
-      const assistantResponse = completion.choices[0]?.message.content || '';
+      let assistantResponse = '';
+
+      // 流式读取并 yield 每个 chunk
+      for await (const chunk of stream) {
+         const content = chunk.choices[0]?.delta?.content || '';
+         if (content) {
+            assistantResponse += content;
+            yield { type: 'chunk', text: content };
+         }
+      }
 
       // 保存用户消息
       await chatMessageRepository.createMessage({
@@ -103,10 +125,8 @@ export const llmClient = {
          userId,
       });
 
-      return {
-         id: savedAssistantMessage.id,
-         text: assistantResponse,
-      };
+      // 发送完成信号
+      yield { type: 'done', responseId: savedAssistantMessage.id };
    },
 
    // other interfaces

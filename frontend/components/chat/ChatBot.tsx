@@ -64,34 +64,68 @@ export default function ChatBot() {
          // Show typing indicator
          setIsTyping(true);
 
+         // Create temporary bot message with empty text
+         const botMessageId = `bot-${Date.now()}`;
+         const botMessage: IMessage = {
+            _id: botMessageId,
+            text: '',
+            createdAt: new Date(),
+            user: {
+               _id: 'bot',
+               name: 'AI Assistant',
+               avatar: '🤖',
+            },
+         };
+
+         // Add empty bot message to chat
+         setMessages((previousMessages) =>
+            GiftedChat.append(previousMessages, [botMessage])
+         );
+
          try {
-            // Call the API
-            const response = await sendMessage({
+            let accumulatedText = '';
+
+            // Stream the response
+            const stream = sendMessage({
                prompt: userMessage.text,
                previousResponseId,
             });
 
-            // Update previousResponseId for conversation continuity
-            setPreviousResponseId(response.responseId);
+            for await (const event of stream) {
+               if ('chunk' in event) {
+                  // Accumulate text chunks
+                  accumulatedText += event.chunk;
 
-            // Create bot message
-            const botMessage: IMessage = {
-               _id: response.responseId,
-               text: response.message,
-               createdAt: new Date(),
-               user: {
-                  _id: 'bot',
-                  name: 'AI Assistant',
-                  avatar: '🤖',
-               },
-            };
+                  // Update bot message with accumulated text
+                  setMessages((previousMessages) =>
+                     previousMessages.map((msg) =>
+                        msg._id === botMessageId
+                           ? { ...msg, text: accumulatedText }
+                           : msg
+                     )
+                  );
+               } else if ('done' in event && event.done) {
+                  // Update message ID and save responseId
+                  setPreviousResponseId(event.responseId);
 
-            // Add bot message to chat
-            setMessages((previousMessages) =>
-               GiftedChat.append(previousMessages, [botMessage])
-            );
+                  setMessages((previousMessages) =>
+                     previousMessages.map((msg) =>
+                        msg._id === botMessageId
+                           ? { ...msg, _id: event.responseId }
+                           : msg
+                     )
+                  );
+               } else if ('error' in event) {
+                  throw new Error(event.error);
+               }
+            }
          } catch (error) {
             console.error('Error sending message:', error);
+
+            // Remove the temporary bot message
+            setMessages((previousMessages) =>
+               previousMessages.filter((msg) => msg._id !== botMessageId)
+            );
 
             // Show error message
             const errorMessage: IMessage = {

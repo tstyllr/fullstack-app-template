@@ -26,17 +26,36 @@ export const chatController = {
          return;
       }
 
+      // Set SSE headers
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+
       try {
          const { prompt, previousResponseId } = req.body;
-         const response = await chatService.generateTextWithDeepseekClient(
+         const stream = chatService.generateTextWithDeepseekClient(
             prompt,
             req.user.id,
             previousResponseId
          );
 
-         res.json({ message: response.message, responseId: response.id });
+         // Stream the response
+         for await (const event of stream) {
+            if (event.type === 'chunk') {
+               res.write(`data: ${JSON.stringify({ chunk: event.text })}\n\n`);
+            } else if (event.type === 'done') {
+               res.write(
+                  `data: ${JSON.stringify({ done: true, responseId: event.responseId })}\n\n`
+               );
+            }
+         }
+
+         res.end();
       } catch (error) {
-         res.status(500).json({ error: 'Failed to generate a response.' });
+         res.write(
+            `data: ${JSON.stringify({ error: 'Failed to generate a response.' })}\n\n`
+         );
+         res.end();
       }
    },
 };
