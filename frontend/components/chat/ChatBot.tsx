@@ -1,80 +1,327 @@
-import { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import * as Haptics from 'expo-haptics';
-import { ThemedView } from '@/components/themed-view';
-import { ThemedText } from '@/components/themed-text';
+import React, { useState, useCallback, useEffect } from 'react';
+import {
+   GiftedChat,
+   IMessage,
+   Bubble,
+   MessageText,
+   Send,
+   InputToolbar,
+   SystemMessage,
+   AvatarProps,
+} from 'react-native-gifted-chat';
+import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { useAuth } from '@/components/contexts/auth-context';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { sendMessage } from '@/lib/api/chat';
-import ChatInput, { type ChatFormData } from './ChatInput';
-import ChatMessages, { type Message } from './ChatMessages';
-import TypingIndicator from './TypingIndicator';
+import Markdown from 'react-native-markdown-display';
 
-const ChatBot = () => {
-   const [messages, setMessages] = useState<Message[]>([]);
-   const [isBotTyping, setIsBotTyping] = useState(false);
-   const [error, setError] = useState('');
-   const [previousResponseId, setPreviousResponseId] = useState(
-      crypto.randomUUID()
+export default function ChatBot() {
+   const [messages, setMessages] = useState<IMessage[]>([]);
+   const [isTyping, setIsTyping] = useState(false);
+   const [previousResponseId, setPreviousResponseId] = useState<
+      string | undefined
+   >();
+
+   const { user } = useAuth();
+   const colorScheme = useColorScheme();
+   const isDark = colorScheme === 'dark';
+
+   // Theme colors
+   const backgroundColor = useThemeColor({}, 'background');
+   const textColor = useThemeColor({}, 'text');
+   const tintColor = useThemeColor({}, 'tint');
+   const borderColor = useThemeColor({}, 'border');
+
+   useEffect(() => {
+      // Add welcome message
+      setMessages([
+         {
+            _id: 'welcome',
+            text: "Hello! I'm your AI assistant. How can I help you today?",
+            createdAt: new Date(),
+            user: {
+               _id: 'bot',
+               name: 'AI Assistant',
+               avatar: '🤖',
+            },
+            system: false,
+         },
+      ]);
+   }, []);
+
+   const onSend = useCallback(
+      async (newMessages: IMessage[] = []) => {
+         if (newMessages.length === 0) return;
+
+         const userMessage = newMessages[0];
+
+         // Add user message to chat
+         setMessages((previousMessages) =>
+            GiftedChat.append(previousMessages, newMessages)
+         );
+
+         // Show typing indicator
+         setIsTyping(true);
+
+         try {
+            // Call the API
+            const response = await sendMessage({
+               prompt: userMessage.text,
+               previousResponseId,
+            });
+
+            // Update previousResponseId for conversation continuity
+            setPreviousResponseId(response.responseId);
+
+            // Create bot message
+            const botMessage: IMessage = {
+               _id: response.responseId,
+               text: response.message,
+               createdAt: new Date(),
+               user: {
+                  _id: 'bot',
+                  name: 'AI Assistant',
+                  avatar: '🤖',
+               },
+            };
+
+            // Add bot message to chat
+            setMessages((previousMessages) =>
+               GiftedChat.append(previousMessages, [botMessage])
+            );
+         } catch (error) {
+            console.error('Error sending message:', error);
+
+            // Show error message
+            const errorMessage: IMessage = {
+               _id: `error-${Date.now()}`,
+               text: 'Sorry, I encountered an error. Please try again.',
+               createdAt: new Date(),
+               user: {
+                  _id: 'system',
+                  name: 'System',
+               },
+               system: true,
+            };
+
+            setMessages((previousMessages) =>
+               GiftedChat.append(previousMessages, [errorMessage])
+            );
+         } finally {
+            setIsTyping(false);
+         }
+      },
+      [previousResponseId]
    );
 
-   const onSubmit = async ({ prompt }: ChatFormData) => {
-      try {
-         setMessages((prev) => [...prev, { content: prompt, role: 'user' }]);
-         setIsBotTyping(true);
-         setError('');
+   const renderBubble = (props: any) => {
+      return (
+         <Bubble
+            {...props}
+            wrapperStyle={{
+               right: {
+                  backgroundColor: tintColor,
+                  marginVertical: 8,
+               },
+               left: {
+                  backgroundColor: isDark ? '#2d3748' : '#f3f4f6',
+                  marginVertical: 8,
+               },
+            }}
+            textStyle={{
+               right: {
+                  color: isDark ? '#fff' : '#fff',
+               },
+               left: {
+                  color: textColor,
+               },
+            }}
+            renderMessageText={(messageProps) => {
+               const { currentMessage } = messageProps;
+               if (!currentMessage) return null;
 
-         // Haptic feedback on user message send
-         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+               const isBot = currentMessage.user._id === 'bot';
 
-         const data = await sendMessage({
-            prompt,
-            previousResponseId,
-         });
+               if (isBot) {
+                  return (
+                     <View style={styles.markdownContainer}>
+                        <Markdown
+                           style={{
+                              body: {
+                                 color: textColor,
+                                 fontSize: 16,
+                              },
+                              code_inline: {
+                                 backgroundColor: isDark
+                                    ? '#1a202c'
+                                    : '#e2e8f0',
+                                 color: textColor,
+                                 fontSize: 14,
+                                 padding: 4,
+                                 borderRadius: 4,
+                              },
+                              code_block: {
+                                 backgroundColor: isDark
+                                    ? '#1a202c'
+                                    : '#e2e8f0',
+                                 color: textColor,
+                                 fontSize: 14,
+                                 padding: 8,
+                                 borderRadius: 4,
+                              },
+                              fence: {
+                                 backgroundColor: isDark
+                                    ? '#1a202c'
+                                    : '#e2e8f0',
+                                 color: textColor,
+                                 fontSize: 14,
+                                 padding: 8,
+                                 borderRadius: 4,
+                              },
+                           }}
+                        >
+                           {currentMessage.text}
+                        </Markdown>
+                     </View>
+                  );
+               }
 
-         setMessages((prev) => [
-            ...prev,
-            { content: data.message, role: 'bot' },
-         ]);
-         setPreviousResponseId(data.responseId as any);
+               return (
+                  <MessageText
+                     {...messageProps}
+                     textStyle={{
+                        left: { color: textColor },
+                        right: { color: '#fff' },
+                     }}
+                  />
+               );
+            }}
+         />
+      );
+   };
 
-         // Haptic feedback on bot response
-         await Haptics.notificationAsync(
-            Haptics.NotificationFeedbackType.Success
+   const renderSend = (props: any) => {
+      return (
+         <Send
+            {...props}
+            containerStyle={styles.sendContainer}
+            textStyle={{ color: tintColor }}
+         />
+      );
+   };
+
+   const renderInputToolbar = (props: any) => {
+      return (
+         <InputToolbar
+            {...props}
+            containerStyle={[
+               styles.inputToolbar,
+               {
+                  backgroundColor: backgroundColor,
+                  borderTopColor: borderColor,
+               },
+            ]}
+            primaryStyle={{ alignItems: 'center' }}
+            textInputStyle={{ color: textColor }}
+         />
+      );
+   };
+
+   const renderSystemMessage = (props: any) => {
+      return (
+         <SystemMessage
+            {...props}
+            textStyle={{
+               color: isDark ? '#a0aec0' : '#718096',
+            }}
+         />
+      );
+   };
+
+   const renderFooter = () => {
+      if (isTyping) {
+         return (
+            <View style={styles.typingIndicator}>
+               <ActivityIndicator size="small" color={tintColor} />
+            </View>
          );
-      } catch (error) {
-         console.error(error);
-         setError('Something went wrong, try again!');
-         await Haptics.notificationAsync(
-            Haptics.NotificationFeedbackType.Error
-         );
-      } finally {
-         setIsBotTyping(false);
       }
+      return null;
+   };
+
+   const renderAvatar = (props: AvatarProps<IMessage>) => {
+      const { currentMessage } = props;
+      const avatar = currentMessage?.user?.avatar;
+
+      if (!avatar || typeof avatar === 'function') return null;
+
+      return (
+         <View style={styles.avatarContainer}>
+            <Text style={styles.avatarText}>{avatar}</Text>
+         </View>
+      );
    };
 
    return (
-      <ThemedView style={styles.container}>
-         <ThemedView style={styles.messagesContainer}>
-            <ChatMessages messages={messages} />
-            {isBotTyping && <TypingIndicator />}
-            {error && <ThemedText style={styles.error}>{error}</ThemedText>}
-         </ThemedView>
-         <ChatInput onSubmit={onSubmit} />
-      </ThemedView>
+      <GiftedChat
+         messages={messages}
+         onSend={(messages) => onSend(messages)}
+         user={{
+            _id: user?.id || 'user',
+            name: user?.phone || 'You',
+            avatar: '🐱',
+         }}
+         renderBubble={renderBubble}
+         renderSend={renderSend}
+         renderInputToolbar={renderInputToolbar}
+         renderSystemMessage={renderSystemMessage}
+         renderFooter={renderFooter}
+         alwaysShowSend
+         isScrollToBottomEnabled={true}
+         showUserAvatar={true}
+         renderAvatar={renderAvatar}
+         placeholder="Type a message..."
+         textInputProps={{
+            placeholderTextColor: isDark ? '#718096' : '#a0aec0',
+         }}
+         messagesContainerStyle={{
+            backgroundColor: backgroundColor,
+         }}
+         bottomOffset={0}
+      />
    );
-};
+}
 
 const styles = StyleSheet.create({
-   container: {
-      flex: 1,
+   sendContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+      marginRight: 10,
    },
-   messagesContainer: {
-      flex: 1,
+   inputToolbar: {
+      borderTopWidth: 1,
+      paddingVertical: 8,
    },
-   error: {
-      color: '#ef4444',
+   typingIndicator: {
       paddingHorizontal: 16,
       paddingVertical: 8,
    },
+   markdownContainer: {
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+   },
+   avatarContainer: {
+      marginBottom: 8,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f0f0f0',
+   },
+   avatarText: {
+      fontSize: 24,
+   },
 });
-
-export default ChatBot;

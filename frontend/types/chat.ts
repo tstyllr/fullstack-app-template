@@ -1,7 +1,7 @@
 // Send message
 export interface SendMessageRequest {
    prompt: string;
-   previousResponseId: string;
+   previousResponseId?: string;
 }
 
 export interface SendMessageResponse {

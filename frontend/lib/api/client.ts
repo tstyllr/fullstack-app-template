@@ -5,7 +5,7 @@ import { isTokenExpiringSoon } from '@/lib/utils/jwt';
 // Create axios instance with base configuration
 const apiClient = axios.create({
    baseURL: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000/api',
-   timeout: 10000,
+   timeout: 15 * 60 * 1000,
    headers: {
       'Content-Type': 'application/json',
    },
