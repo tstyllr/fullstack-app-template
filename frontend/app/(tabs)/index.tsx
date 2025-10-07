@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { ThemedView } from '@/components/themed-view';
-import ChatBot from '@/components/chat/ChatBot';
+import { ThemedView } from '@/components/atoms/themed-view';
+import ChatBot from '@/components/organisms/ChatBot';
 
 export default function HomeScreen() {
    return (

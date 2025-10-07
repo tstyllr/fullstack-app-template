@@ -10,9 +10,9 @@ import {
    Platform,
    ScrollView,
 } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { useAuth } from '@/components/contexts/auth-context';
+import { ThemedText } from '@/components/atoms/themed-text';
+import { ThemedView } from '@/components/atoms/themed-view';
+import { useAuth } from '@/components/molecules/auth-context';
 import { sendCode, loginWithCode, loginWithPassword } from '@/lib/api/auth';
 import {
    saveLoginMethod,

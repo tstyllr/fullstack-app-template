@@ -9,7 +9,7 @@ import 'react-native-reanimated';
 import { useEffect } from 'react';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { AuthProvider, useAuth } from '@/components/contexts/auth-context';
+import { AuthProvider, useAuth } from '@/components/molecules/auth-context';
 
 export const unstable_settings = {
    anchor: '(tabs)',
