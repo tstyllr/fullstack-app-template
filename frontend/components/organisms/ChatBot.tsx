@@ -10,7 +10,7 @@ import {
    AvatarProps,
 } from 'react-native-gifted-chat';
 import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
-import { useAuth } from '@/components/contexts/auth-context';
+import { useAuth } from '@/components/molecules/auth-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { sendMessage } from '@/lib/api/chat';
