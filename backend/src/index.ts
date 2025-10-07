@@ -1,18 +1,15 @@
-import dotenv from 'dotenv';
+import '@dotenvx/dotenvx/config';
 import express from 'express';
 import { logger } from './utils/logger.js';
 
-// Load environment variables
-dotenv.config();
-
 const app = express();
 
-// Initialize startup modules
-import('./startup/logging.js').then((m) => m.default());
-import('./startup/cors.js').then((m) => m.default(app));
-import('./startup/routes.js').then((m) => m.default(app));
-import('./startup/db.js').then((m) => m.default());
-import('./startup/config.js').then((m) => m.default());
+// Initialize startup modules and wait for them to complete
+await import('./startup/logging.js').then((m) => m.default());
+await import('./startup/cors.js').then((m) => m.default(app));
+await import('./startup/db.js').then((m) => m.default());
+await import('./startup/config.js').then((m) => m.default());
+await import('./startup/routes.js').then((m) => m.default(app));
 
 const port = process.env.PORT || 3000;
 

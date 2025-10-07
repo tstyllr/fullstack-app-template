@@ -9,7 +9,6 @@
    "scripts": {
       "dev": "bun run index.ts",
       "format": "prettier --write .",
-      "type-check": "cd ./backend; bunx tsc; cd ../frontend; bunx tsc",
       "prepare": "husky"
    },
    "devDependencies": {
