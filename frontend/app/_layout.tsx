@@ -33,7 +33,7 @@ function RootLayoutNav() {
          // Redirect to main app if authenticated
          router.replace('/(tabs)');
       }
-   }, [isAuthenticated, isLoading, segments]);
+   }, [isAuthenticated, isLoading, segments, router]);
 
    return (
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>

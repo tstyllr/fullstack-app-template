@@ -168,3 +168,4 @@ Backend implements phone-based authentication:
 - **TypeScript**: Strict mode enabled, uses ESNext with bundler module resolution
 - Frontend is a Universal React Native applications (Android, iOS, and web) built with Expo
 - The frontend must be compatible with dark mode
+- This project does not support internationalization; it requires Chinese language support
