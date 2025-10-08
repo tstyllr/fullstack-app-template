@@ -39,12 +39,22 @@ export default function ChangePasswordScreen() {
          // 显示成功提示
          if (Platform.OS === 'web') {
             window.alert('密码修改成功');
-            router.back();
+            if (router.canGoBack()) {
+               router.back();
+            } else {
+               router.replace('/settings');
+            }
          } else {
             Alert.alert('成功', '密码修改成功', [
                {
                   text: '确定',
-                  onPress: () => router.back(),
+                  onPress: () => {
+                     if (router.canGoBack()) {
+                        router.back();
+                     } else {
+                        router.replace('/settings');
+                     }
+                  },
                },
             ]);
          }
