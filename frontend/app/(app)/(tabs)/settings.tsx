@@ -39,13 +39,13 @@ export default function TabTwoScreen() {
                icon="paintbrush.fill"
                title="主题"
                subtitle="外观和主题设置"
-               onPress={() => router.push('/theme')}
+               onPress={() => router.push('/settings/theme' as any)}
             />
             <SettingItem
                icon="person.circle.fill"
                title="账号设置"
                subtitle="账号信息、密码和登录管理"
-               onPress={() => router.push('/account')}
+               onPress={() => router.push('/settings/account' as any)}
             />
          </ThemedView>
       </ParallaxScrollView>
