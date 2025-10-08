@@ -35,6 +35,13 @@ export default function TabLayout() {
                ),
             }}
          />
+         <Tabs.Screen
+            name="theme"
+            options={{
+               href: null, // 不在 tab bar 中显示
+               title: '主题',
+            }}
+         />
       </Tabs>
    );
 }
