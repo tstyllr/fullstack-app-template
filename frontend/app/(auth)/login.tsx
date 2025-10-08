@@ -243,7 +243,7 @@ export default function LoginScreen() {
    // 渲染发送验证码按钮
    const renderSendCodeButton = () => (
       <ThemedButton
-         title={countdown > 0 ? `${countdown}s` : '发送验证码'}
+         title={countdown > 0 ? `${countdown}秒后重试` : '发送验证码'}
          variant="primary"
          onPress={handleSendCode}
          disabled={countdown > 0 || isLoading}
