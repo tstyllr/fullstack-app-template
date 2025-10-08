@@ -202,3 +202,6 @@ Backend includes OpenAI integration:
 - Frontend is a Universal React Native applications (Android, iOS, and web) built with Expo
 - The frontend must be compatible with dark mode
 - This project does not support internationalization; it requires Chinese language support
+- **Frontend Styling**: Never hardcode `margin`, `padding`, `borderRadius`, typography, or colors—always use theme constants from `constants/theme.ts` (`Spacing`, `BorderRadius`, `Typography`, `Colors`)
+- **Frontend Components**: Prefer themed components (`ThemedView`, `ThemedText`, `ThemedButton`, `ThemedInput`) over React Native primitives (`View`, `Text`, `Button`, `TextInput`) for unified theme management and dark mode support
+- **Frontend Icons**: Use `IconSymbol` component for platform-native icons (iOS, Android, Web) without bundling additional assets
