@@ -20,12 +20,14 @@ const MAPPING = {
    'house.fill': 'home',
    'paperplane.fill': 'send',
    'chevron.left.forwardslash.chevron.right': 'code',
+   'chevron.left': 'chevron-left',
    'chevron.right': 'chevron-right',
    'gear.circle.fill': 'settings',
    'sun.max.fill': 'wb-sunny',
    'moon.fill': 'nightlight-round',
    'circle.lefthalf.filled': 'brightness-auto',
    'paintbrush.fill': 'palette',
+   'checkmark.circle.fill': 'check-circle',
 } as IconMapping;
 
 /**

@@ -39,7 +39,7 @@ export default function TabTwoScreen() {
                icon="paintbrush.fill"
                title="主题"
                subtitle="外观和主题设置"
-               onPress={() => router.push('/(tabs)/theme')}
+               onPress={() => router.push('/theme')}
             />
          </ThemedView>
       </ParallaxScrollView>

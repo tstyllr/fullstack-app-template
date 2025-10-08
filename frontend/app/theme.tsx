@@ -53,6 +53,7 @@ export default function ThemeScreen() {
    return (
       <ParallaxScrollView
          headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+         showBackButton={true}
          headerImage={
             <IconSymbol
                size={310}
@@ -133,7 +134,7 @@ export default function ThemeScreen() {
                         </ThemedView>
                         {isSelected && (
                            <IconSymbol
-                              name="chevron.right"
+                              name="checkmark.circle.fill"
                               size={24}
                               color={tintColor}
                               style={styles.checkIcon}
