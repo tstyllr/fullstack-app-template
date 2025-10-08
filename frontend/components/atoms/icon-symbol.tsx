@@ -28,6 +28,8 @@ const MAPPING = {
    'circle.lefthalf.filled': 'brightness-auto',
    'paintbrush.fill': 'palette',
    'checkmark.circle.fill': 'check-circle',
+   'person.circle.fill': 'account-circle',
+   'key.fill': 'vpn-key',
 } as IconMapping;
 
 /**
