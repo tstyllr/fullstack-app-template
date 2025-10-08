@@ -22,6 +22,10 @@ const MAPPING = {
    'chevron.left.forwardslash.chevron.right': 'code',
    'chevron.right': 'chevron-right',
    'gear.circle.fill': 'settings',
+   'sun.max.fill': 'wb-sunny',
+   'moon.fill': 'nightlight-round',
+   'circle.lefthalf.filled': 'brightness-auto',
+   'paintbrush.fill': 'palette',
 } as IconMapping;
 
 /**

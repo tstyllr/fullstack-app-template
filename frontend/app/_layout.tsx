@@ -1,7 +1,7 @@
 import {
    DarkTheme,
    DefaultTheme,
-   ThemeProvider,
+   ThemeProvider as NavigationThemeProvider,
 } from '@react-navigation/native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider, useAuth } from '@/components/molecules/auth-context';
+import { ThemeProvider } from '@/components/molecules/theme-context';
 
 export const unstable_settings = {
    anchor: '(tabs)',
@@ -36,7 +37,9 @@ function RootLayoutNav() {
    }, [isAuthenticated, isLoading, segments, router]);
 
    return (
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <NavigationThemeProvider
+         value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+      >
          <Stack>
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -46,14 +49,16 @@ function RootLayoutNav() {
             />
          </Stack>
          <StatusBar style="auto" />
-      </ThemeProvider>
+      </NavigationThemeProvider>
    );
 }
 
 export default function RootLayout() {
    return (
-      <AuthProvider>
-         <RootLayoutNav />
-      </AuthProvider>
+      <ThemeProvider>
+         <AuthProvider>
+            <RootLayoutNav />
+         </AuthProvider>
+      </ThemeProvider>
    );
 }
