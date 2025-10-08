@@ -39,7 +39,11 @@ export default function ParallaxScrollView({
 
    const handleBackPress = () => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      router.back();
+      if (router.canGoBack()) {
+         router.back();
+      } else {
+         router.replace('/');
+      }
    };
    const headerAnimatedStyle = useAnimatedStyle(() => {
       return {
