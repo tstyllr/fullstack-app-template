@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { ThemedText } from './themed-text';
-import { BorderRadius, Spacing } from '@/constants/theme';
+import { BorderRadius, Spacing, Typography } from '@/constants/theme';
 
 export type ThemedButtonProps = PressableProps & {
    title: string;
@@ -17,6 +17,8 @@ export type ThemedButtonProps = PressableProps & {
    darkColor?: string;
    lightBackgroundColor?: string;
    darkBackgroundColor?: string;
+   lightBorderColor?: string;
+   darkBorderColor?: string;
 };
 
 export function ThemedButton({
@@ -29,17 +31,24 @@ export function ThemedButton({
    darkColor,
    lightBackgroundColor,
    darkBackgroundColor,
+   lightBorderColor,
+   darkBorderColor,
    ...rest
 }: ThemedButtonProps) {
    const tintColor = useThemeColor({}, 'tint');
    const defaultBackgroundColor = useThemeColor({}, 'background');
+   const primaryTextColor = useThemeColor({}, 'background'); // 使用背景色作为 primary 按钮的文字色，形成对比
    const customBackgroundColor = useThemeColor(
       { light: lightBackgroundColor, dark: darkBackgroundColor },
       'tint'
    );
    const customTextColor = useThemeColor(
       { light: lightColor, dark: darkColor },
-      'text'
+      'textPrimary'
+   );
+   const customBorderColor = useThemeColor(
+      { light: lightBorderColor, dark: darkBorderColor },
+      'tint'
    );
 
    // Determine colors based on variant
@@ -62,24 +71,31 @@ export function ThemedButton({
       }
    }
 
-   let textColor: string;
+   let textColor: string = useThemeColor({}, 'textPrimary');
    if (lightColor || darkColor) {
       textColor = customTextColor;
    } else {
       switch (variant) {
          case 'primary':
-            textColor = '#ffffff';
+            textColor = primaryTextColor; // 浅色模式：深色背景+浅色文字，暗黑模式：浅色背景+深色文字
             break;
          case 'secondary':
          case 'outline':
             textColor = tintColor;
             break;
          default:
-            textColor = '#ffffff';
+            break;
       }
    }
 
-   const borderColor = variant === 'outline' ? tintColor : 'transparent';
+   // Determine border color
+   let borderColor: string;
+   if (lightBorderColor || darkBorderColor) {
+      borderColor = customBorderColor;
+   } else {
+      borderColor = variant === 'outline' ? tintColor : 'transparent';
+   }
+
    const isDisabled = disabled || loading;
 
    const combinedStyle = ({ pressed }: { pressed: boolean }) => {
@@ -136,7 +152,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
    },
    text: {
-      fontSize: 16,
+      ...Typography.default,
    },
    disabled: {
       opacity: 0.5,

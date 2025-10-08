@@ -15,6 +15,7 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { sendMessage } from '@/lib/api/chat';
 import Markdown from 'react-native-markdown-display';
+import { Typography } from '@/constants/theme';
 
 export default function ChatBot() {
    const [messages, setMessages] = useState<IMessage[]>([]);
@@ -29,7 +30,7 @@ export default function ChatBot() {
 
    // Theme colors
    const backgroundColor = useThemeColor({}, 'background');
-   const textColor = useThemeColor({}, 'text');
+   const textColor = useThemeColor({}, 'textPrimary');
    const tintColor = useThemeColor({}, 'tint');
    const borderColor = useThemeColor({}, 'border');
 
@@ -184,14 +185,14 @@ export default function ChatBot() {
                            style={{
                               body: {
                                  color: textColor,
-                                 fontSize: 16,
+                                 ...Typography.default,
                               },
                               code_inline: {
                                  backgroundColor: isDark
                                     ? '#1a202c'
                                     : '#e2e8f0',
                                  color: textColor,
-                                 fontSize: 14,
+                                 ...Typography.small,
                                  padding: 4,
                                  borderRadius: 4,
                               },
@@ -200,7 +201,7 @@ export default function ChatBot() {
                                     ? '#1a202c'
                                     : '#e2e8f0',
                                  color: textColor,
-                                 fontSize: 14,
+                                 ...Typography.small,
                                  padding: 8,
                                  borderRadius: 4,
                               },
@@ -209,7 +210,7 @@ export default function ChatBot() {
                                     ? '#1a202c'
                                     : '#e2e8f0',
                                  color: textColor,
-                                 fontSize: 14,
+                                 ...Typography.small,
                                  padding: 8,
                                  borderRadius: 4,
                               },
