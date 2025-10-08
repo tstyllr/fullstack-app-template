@@ -93,7 +93,7 @@ export default function AccountScreen() {
             icon="key.fill"
             title="修改密码"
             subtitle="设置或修改登录密码"
-            onPress={() => router.push('/change-password')}
+            onPress={() => router.push('/settings/change-password' as any)}
          />
 
          {/* Logout Button */}

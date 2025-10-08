@@ -9,7 +9,7 @@
       "ios": "expo start --ios",
       "web": "expo start --web",
       "lint": "expo lint",
-      "type-check": "bunx tsc"
+      "tc": "bunx tsc"
    },
    "dependencies": {
       "@expo/vector-icons": "^15.0.2",

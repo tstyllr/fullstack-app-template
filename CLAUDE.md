@@ -54,10 +54,10 @@ bun run format         # Prettier on all files
 
 # Frontend linting and type-checking
 cd frontend && bun run lint
-cd frontend && bun run type-check
+cd frontend && bun run tc
 
 # Backend type-checking
-cd backend && bun run type-check
+cd backend && bun run tc
 ```
 
 ## Project Structure
@@ -125,12 +125,12 @@ Expo app with:
 
 - Environment-specific files: `.env` (default), `.env.development`, `.env.production`, `.env.test`
 - Key variables:
-  - `DATABASE_URL`: MySQL connection string
-  - `JWT_PRIVATE_KEY`: Secret for JWT signing
-  - `PORT`: Server port (default: 3000)
-  - `REQUIRES_AUTH`: Enable/disable auth (default: true)
-  - SMS API credentials (Tencent Cloud): `SMS_APP_ID`, `SMS_APP_KEY`, `SMS_TEMPLATE_ID`, `SMS_SIGN_NAME`
-  - OpenAI configuration: `OPENAI_API_KEY`, `OPENAI_BASE_URL`
+   - `DATABASE_URL`: MySQL connection string
+   - `JWT_PRIVATE_KEY`: Secret for JWT signing
+   - `PORT`: Server port (default: 3000)
+   - `REQUIRES_AUTH`: Enable/disable auth (default: true)
+   - SMS API credentials (Tencent Cloud): `SMS_APP_ID`, `SMS_APP_KEY`, `SMS_TEMPLATE_ID`, `SMS_SIGN_NAME`
+   - OpenAI configuration: `OPENAI_API_KEY`, `OPENAI_BASE_URL`
 
 **Frontend**:
 
@@ -166,7 +166,7 @@ Backend includes OpenAI integration:
 - Backend testing with Bun's built-in test runner (bun test)
 - Frontend uses Expo development server with Fast Refresh
 - Prisma Studio available for database inspection (bun run db:studio)
-- Type checking available for both frontend and backend via `bun run type-check`
+- Type checking available for both frontend and backend via `bun run tc`
 
 ## Adding New Features
 
