@@ -41,6 +41,12 @@ export default function TabTwoScreen() {
                subtitle="外观和主题设置"
                onPress={() => router.push('/theme')}
             />
+            <SettingItem
+               icon="person.circle.fill"
+               title="账号设置"
+               subtitle="账号信息、密码和登录管理"
+               onPress={() => router.push('/account')}
+            />
          </ThemedView>
       </ParallaxScrollView>
    );
