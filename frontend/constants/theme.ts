@@ -54,3 +54,26 @@ export const Fonts = Platform.select({
       mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
    },
 });
+
+/**
+ * 间距系统 - 基于 4px 的倍数，确保在不同平台上的一致性
+ */
+export const Spacing = {
+   xs: 4,
+   sm: 8,
+   md: 16,
+   lg: 24,
+   xl: 32,
+   xxl: 48,
+} as const;
+
+/**
+ * 圆角系统 - 统一的圆角规范
+ */
+export const BorderRadius = {
+   sm: 4,
+   md: 8,
+   lg: 12,
+   xl: 16,
+   round: 9999, // 完全圆角（用于圆形按钮等）
+} as const;
