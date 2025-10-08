@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { ThemedText } from './themed-text';
-import { BorderRadius, Spacing } from '@/constants/theme';
+import { BorderRadius, Spacing, Typography } from '@/constants/theme';
 
 export type ThemedInputProps = TextInputProps & {
    lightColor?: string;
@@ -30,7 +30,10 @@ export function ThemedInput({
    rightButton,
    ...rest
 }: ThemedInputProps) {
-   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+   const color = useThemeColor(
+      { light: lightColor, dark: darkColor },
+      'textPrimary'
+   );
    const backgroundColor = useThemeColor(
       { light: lightBackgroundColor, dark: darkBackgroundColor },
       'background'
@@ -40,7 +43,7 @@ export function ThemedInput({
       'border'
    );
 
-   const placeholderColor = useThemeColor({}, 'icon'); // Use icon color for placeholder
+   const placeholderColor = useThemeColor({}, 'placeholder'); // Use icon color for placeholder
 
    return (
       <View style={styles.container}>
@@ -96,11 +99,11 @@ const styles = StyleSheet.create({
       width: '100%',
    },
    input: {
+      ...Typography.default,
       height: 48,
       borderWidth: 1,
       borderRadius: BorderRadius.md,
       paddingHorizontal: Spacing.md,
-      fontSize: 16,
    },
    inputWithButton: {
       paddingRight: 100,
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
       opacity: 0.6,
    },
    error: {
-      fontSize: 12,
+      ...Typography.tiny,
       marginTop: Spacing.xs,
    },
 });

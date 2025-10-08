@@ -26,7 +26,12 @@ import {
    clearSavedCredentials,
 } from '@/lib/storage/token-storage';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Colors } from '@/constants/theme';
+import {
+   Colors,
+   tintColorLight,
+   Typography,
+   whiteColor,
+} from '@/constants/theme';
 
 export default function LoginScreen() {
    const colorScheme = useColorScheme();
@@ -196,7 +201,7 @@ export default function LoginScreen() {
                   ]}
                >
                   <TextInput
-                     style={[styles.phoneInput, { color: colors.text }]}
+                     style={[styles.phoneInput, { color: colors.textPrimary }]}
                      placeholder="手机号"
                      placeholderTextColor={colors.tabIconDefault}
                      value={phone}
@@ -236,7 +241,7 @@ export default function LoginScreen() {
                            style={[
                               styles.input,
                               {
-                                 color: colors.text,
+                                 color: colors.textPrimary,
                                  borderColor: colors.border,
                               },
                            ]}
@@ -279,7 +284,7 @@ export default function LoginScreen() {
                            style={[
                               styles.input,
                               {
-                                 color: colors.text,
+                                 color: colors.textPrimary,
                                  borderColor: colors.border,
                               },
                            ]}
@@ -333,7 +338,19 @@ export default function LoginScreen() {
                      ]}
                   >
                      {rememberMe && (
-                        <ThemedText style={styles.checkmark}>✓</ThemedText>
+                        <ThemedText
+                           style={[
+                              styles.checkmark,
+                              {
+                                 color:
+                                    colorScheme === 'dark'
+                                       ? tintColorLight
+                                       : whiteColor,
+                              },
+                           ]}
+                        >
+                           ✓
+                        </ThemedText>
                      )}
                   </View>
                   <ThemedText style={styles.rememberMeText}>
@@ -381,8 +398,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
    },
    title: {
-      fontSize: 32,
-      fontWeight: 'bold',
+      ...Typography.title,
       marginBottom: 40,
       textAlign: 'center',
    },
@@ -390,11 +406,11 @@ const styles = StyleSheet.create({
       marginBottom: 16,
    },
    input: {
+      ...Typography.default,
       height: 50,
       borderWidth: 1,
       borderRadius: 8,
       paddingHorizontal: 16,
-      fontSize: 16,
    },
    phoneInputWrapper: {
       flexDirection: 'row',
@@ -406,10 +422,9 @@ const styles = StyleSheet.create({
       paddingRight: 4,
    },
    phoneInput: {
+      ...Typography.default,
       flex: 1,
-      height: 50,
       paddingHorizontal: 16,
-      fontSize: 16,
    },
    inlineSendCodeButton: {
       height: 42,
@@ -420,9 +435,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
    },
    inlineSendCodeButtonText: {
+      ...Typography.smallSemiBold,
       color: '#fff',
-      fontSize: 14,
-      fontWeight: '600',
    },
    loginButton: {
       height: 50,
@@ -432,9 +446,8 @@ const styles = StyleSheet.create({
       marginTop: 8,
    },
    loginButtonText: {
+      ...Typography.defaultSemiBold,
       color: '#fff',
-      fontSize: 16,
-      fontWeight: '600',
    },
    switchModeButton: {
       marginTop: 24,
@@ -442,7 +455,7 @@ const styles = StyleSheet.create({
       alignSelf: 'flex-end',
    },
    switchModeText: {
-      fontSize: 14,
+      ...Typography.small,
    },
    rememberMeContainer: {
       flexDirection: 'row',
@@ -459,11 +472,9 @@ const styles = StyleSheet.create({
       alignItems: 'center',
    },
    checkmark: {
-      color: '#fff',
-      fontSize: 14,
-      fontWeight: 'bold',
+      ...Typography.smallSemiBold,
    },
    rememberMeText: {
-      fontSize: 14,
+      ...Typography.small,
    },
 });

@@ -1,19 +1,22 @@
-import { StyleSheet, Alert, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Alert, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import ParallaxScrollView from '@/components/templates/parallax-scroll-view';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { ThemedView } from '@/components/atoms/themed-view';
+import { ThemedButton } from '@/components/atoms/themed-button';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { SettingItem } from '@/components/molecules/setting-item';
 import { useAuth } from '@/components/molecules/auth-context';
 import { logout as logoutApi } from '@/lib/api/auth';
-import { Fonts, Spacing, BorderRadius } from '@/constants/theme';
+import { Fonts, Spacing, BorderRadius, Typography } from '@/constants/theme';
+import { useThemeColor } from '@/hooks/use-theme-color';
 
 export default function AccountScreen() {
    const router = useRouter();
    const { user, logout, refreshToken } = useAuth();
+   const destructiveColor = useThemeColor({}, 'destructive');
 
    const handleLogout = async () => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -95,12 +98,15 @@ export default function AccountScreen() {
 
          {/* Logout Button */}
          <ThemedView style={styles.section}>
-            <TouchableOpacity
+            <ThemedButton
+               title="退出登录"
+               variant="outline"
                onPress={handleLogout}
-               style={[styles.logoutButton, { borderColor: '#ff3b30' }]}
-            >
-               <ThemedText style={styles.logoutButtonText}>退出登录</ThemedText>
-            </TouchableOpacity>
+               lightColor={destructiveColor}
+               darkColor={destructiveColor}
+               lightBorderColor={destructiveColor}
+               darkBorderColor={destructiveColor}
+            />
          </ThemedView>
       </ParallaxScrollView>
    );
@@ -122,8 +128,7 @@ const styles = StyleSheet.create({
       marginBottom: Spacing.lg,
    },
    sectionTitle: {
-      fontSize: 14,
-      fontWeight: '600',
+      ...Typography.smallSemiBold,
       marginBottom: Spacing.sm,
       marginLeft: Spacing.xs,
       opacity: 0.6,
@@ -143,26 +148,14 @@ const styles = StyleSheet.create({
       borderTopColor: 'transparent',
    },
    infoLabel: {
-      fontSize: 16,
+      ...Typography.default,
    },
    infoValue: {
-      fontSize: 16,
+      ...Typography.default,
       opacity: 0.6,
    },
    settingsSection: {
       borderRadius: BorderRadius.lg,
       overflow: 'hidden',
-   },
-   logoutButton: {
-      borderRadius: BorderRadius.lg,
-      borderWidth: 1,
-      paddingVertical: Spacing.md,
-      alignItems: 'center',
-      justifyContent: 'center',
-   },
-   logoutButtonText: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: '#ff3b30',
    },
 });

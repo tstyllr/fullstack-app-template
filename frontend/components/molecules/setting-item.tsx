@@ -4,7 +4,7 @@ import { ThemedView } from '@/components/atoms/themed-view';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { Spacing } from '@/constants/theme';
+import { Spacing, Typography } from '@/constants/theme';
 
 interface SettingItemProps {
    icon?: React.ComponentProps<typeof IconSymbol>['name'];
@@ -80,10 +80,10 @@ const styles = StyleSheet.create({
       flex: 1,
    },
    title: {
-      fontSize: 16,
+      ...Typography.default,
    },
    subtitle: {
-      fontSize: 14,
+      ...Typography.small,
       marginTop: Spacing.xs,
    },
 });

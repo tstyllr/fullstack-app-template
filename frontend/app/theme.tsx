@@ -7,7 +7,7 @@ import { ThemedView } from '@/components/atoms/themed-view';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { useTheme, ThemeMode } from '@/components/molecules/theme-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { Spacing, BorderRadius, Fonts } from '@/constants/theme';
+import { Spacing, BorderRadius, Fonts, Typography } from '@/constants/theme';
 
 interface ThemeOption {
    mode: ThemeMode;
@@ -194,10 +194,10 @@ const styles = StyleSheet.create({
       flex: 1,
    },
    optionTitle: {
-      fontSize: 16,
+      ...Typography.default,
    },
    optionDescription: {
-      fontSize: 14,
+      ...Typography.small,
       marginTop: Spacing.xs,
    },
    checkIcon: {
