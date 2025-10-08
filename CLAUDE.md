@@ -40,6 +40,10 @@ bun run db:studio       # Open Prisma Studio
 # Server
 bun run dev            # Development with watch mode
 bun start              # Production mode
+
+# Testing
+bun run test           # Run tests once
+bun run test:watch     # Run tests in watch mode
 ```
 
 ### Code Quality
@@ -48,8 +52,12 @@ bun start              # Production mode
 # Format code (from root)
 bun run format         # Prettier on all files
 
-# Frontend linting
+# Frontend linting and type-checking
 cd frontend && bun run lint
+cd frontend && bun run type-check
+
+# Backend type-checking
+cd backend && bun run type-check
 ```
 
 ## Project Structure
@@ -69,9 +77,10 @@ src/
 ├── controllers/     # HTTP request handling & Zod validation
 ├── services/        # Business logic layer
 ├── repositories/    # Database access via Prisma
-├── routes/          # API route definitions
+├── routes/          # API route definitions (auth, users, chat)
 ├── middleware/      # auth, admin, errorHandler
 ├── startup/         # Modular initialization (logging, cors, db, config, routes)
+├── llm/             # LLM integration (OpenAI client)
 ├── types/           # TypeScript type definitions
 └── utils/           # Shared utilities (logger)
 ```
@@ -89,17 +98,22 @@ Expo app with:
 
 - **app/**: File-based routing (Expo Router)
    - `_layout.tsx`: Root layout
-   - `(tabs)/`: Tab-based navigation structure
+   - `(auth)/`: Authentication screens (login)
+   - `(tabs)/`: Tab-based navigation structure (index, setting)
+   - `account.tsx`, `theme.tsx`, `change-password.tsx`: User management screens
    - `modal.tsx`: Modal screens
-- **components/**: Reusable UI components
-   - **ui/**: UI component library
-- **constants/**: App-wide constants (colors, themes, etc.)
+- **components/**: Reusable UI components following Atomic Design
+   - **atoms/**: Basic building blocks (buttons, inputs, etc.)
+   - **molecules/**: Simple component combinations
+   - **organisms/**: Complex UI components
+   - **templates/**: Page-level layouts
+- **constants/**: App-wide constants (theme configuration)
 - **hooks/**: Custom React hooks
 - **assets/**: Images, fonts, etc.
 
 ### Database (backend/prisma/)
 
-- **schema.prisma**: Defines User, RefreshToken, VerificationCode models
+- **schema.prisma**: Defines User, RefreshToken, VerificationCode, ChatMessage models
 - Prisma client generated to backend/generated/prisma/
 - Uses MySQL as database provider
 
@@ -107,13 +121,16 @@ Expo app with:
 
 ### Environment Variables
 
-**Backend** (.env.local):
+**Backend** (uses @dotenvx/dotenvx):
 
-- `DATABASE_URL`: MySQL connection string
-- `JWT_PRIVATE_KEY`: Secret for JWT signing
-- `PORT`: Server port (default: 3000)
-- `REQUIRES_AUTH`: Enable/disable auth (default: true)
-- Backend uses @dotenvx/dotenvx with .env.local files
+- Environment-specific files: `.env` (default), `.env.development`, `.env.production`, `.env.test`
+- Key variables:
+  - `DATABASE_URL`: MySQL connection string
+  - `JWT_PRIVATE_KEY`: Secret for JWT signing
+  - `PORT`: Server port (default: 3000)
+  - `REQUIRES_AUTH`: Enable/disable auth (default: true)
+  - SMS API credentials (Tencent Cloud): `SMS_APP_ID`, `SMS_APP_KEY`, `SMS_TEMPLATE_ID`, `SMS_SIGN_NAME`
+  - OpenAI configuration: `OPENAI_API_KEY`, `OPENAI_BASE_URL`
 
 **Frontend**:
 
@@ -134,11 +151,22 @@ Backend implements phone-based authentication:
 - Middleware: `auth` (validates JWT), `admin` (requires admin role)
 - RefreshToken model for token rotation
 
+## LLM Integration
+
+Backend includes OpenAI integration:
+
+- LLM client in `src/llm/client.ts`
+- Chat API endpoint at `/api/chat`
+- ChatMessage model stores conversation history with conversationId grouping
+- Messages support system, user, and assistant roles
+
 ## Testing & Development
 
 - Backend runs on Bun runtime with hot reload (--watch flag)
+- Backend testing with Bun's built-in test runner (bun test)
 - Frontend uses Expo development server with Fast Refresh
 - Prisma Studio available for database inspection (bun run db:studio)
+- Type checking available for both frontend and backend via `bun run type-check`
 
 ## Adding New Features
 
@@ -155,9 +183,14 @@ Backend implements phone-based authentication:
 ### Frontend
 
 1. Add screens in app/ directory (file-based routing)
-2. Create components in components/
-3. Use themed components (ThemedText, ThemedView) for consistent styling
-4. Expo Router handles navigation automatically based on file structure
+2. Create components following Atomic Design pattern:
+   - atoms/ for basic elements
+   - molecules/ for simple combinations
+   - organisms/ for complex components
+   - templates/ for page layouts
+3. Use themed components for consistent styling and dark mode compatibility
+4. Update theme constants in constants/theme.ts if needed
+5. Expo Router handles navigation automatically based on file structure
 
 ## Important Notes
 
