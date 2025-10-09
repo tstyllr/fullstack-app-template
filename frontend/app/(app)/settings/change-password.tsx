@@ -1,12 +1,8 @@
-import { StyleSheet, Alert, Platform } from 'react-native';
+import { StyleSheet, Alert, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
-import ParallaxScrollView from '@/components/templates/parallax-scroll-view';
-import { ThemedText } from '@/components/atoms/themed-text';
-import { ThemedView } from '@/components/atoms/themed-view';
-import { IconSymbol } from '@/components/atoms/icon-symbol';
-import { Fonts, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 import { ChangePasswordForm } from '@/components/organisms/change-password-form';
 import { useAuth } from '@/components/molecules/auth-context';
 import { setPassword } from '@/lib/api/auth';
@@ -78,52 +74,18 @@ export default function ChangePasswordScreen() {
    };
 
    return (
-      <ParallaxScrollView
-         headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-         showBackButton={true}
-         headerImage={
-            <IconSymbol
-               size={310}
-               color="#808080"
-               name="key.fill"
-               style={styles.headerImage}
-            />
-         }
-      >
-         <ThemedView style={styles.titleContainer}>
-            <ThemedText
-               type="title"
-               style={{
-                  fontFamily: Fonts.rounded,
-               }}
-            >
-               修改密码
-            </ThemedText>
-         </ThemedView>
-
-         <ThemedView style={styles.content}>
-            <ChangePasswordForm
-               phone={user?.phone || ''}
-               onSubmitFormData={handleSubmitFormData}
-            />
-         </ThemedView>
-      </ParallaxScrollView>
+      <ScrollView style={styles.container}>
+         <ChangePasswordForm
+            phone={user?.phone || ''}
+            onSubmitFormData={handleSubmitFormData}
+         />
+      </ScrollView>
    );
 }
 
 const styles = StyleSheet.create({
-   headerImage: {
-      color: '#808080',
-      bottom: -90,
-      left: -35,
-      position: 'absolute',
-   },
-   titleContainer: {
-      flexDirection: 'row',
-      gap: Spacing.sm,
-      marginBottom: Spacing.md,
-   },
-   content: {
-      paddingVertical: Spacing.lg,
+   container: {
+      flex: 1,
+      paddingVertical: Spacing.md,
    },
 });
