@@ -17,14 +17,14 @@ export default function AppLayout() {
    return (
       <Stack>
          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-         <Stack.Screen name="settings/theme" options={{ headerShown: false }} />
+         <Stack.Screen name="settings/theme" options={{ title: '主题' }} />
          <Stack.Screen
             name="settings/account"
-            options={{ headerShown: false }}
+            options={{ title: '账号设置' }}
          />
          <Stack.Screen
             name="settings/change-password"
-            options={{ headerShown: false }}
+            options={{ title: '修改密码' }}
          />
          <Stack.Screen
             name="modal"

@@ -1,13 +1,12 @@
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable, ScrollView, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
-import ParallaxScrollView from '@/components/templates/parallax-scroll-view';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { ThemedView } from '@/components/atoms/themed-view';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { useTheme, ThemeMode } from '@/components/molecules/theme-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { Spacing, BorderRadius, Fonts, Typography } from '@/constants/theme';
+import { Spacing, BorderRadius, Typography } from '@/constants/theme';
 
 interface ThemeOption {
    mode: ThemeMode;
@@ -51,30 +50,8 @@ export default function ThemeScreen() {
    };
 
    return (
-      <ParallaxScrollView
-         headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-         showBackButton={true}
-         headerImage={
-            <IconSymbol
-               size={310}
-               color="#808080"
-               name="paintbrush.fill"
-               style={styles.headerImage}
-            />
-         }
-      >
-         <ThemedView style={styles.titleContainer}>
-            <ThemedText
-               type="title"
-               style={{
-                  fontFamily: Fonts.rounded,
-               }}
-            >
-               主题
-            </ThemedText>
-         </ThemedView>
-
-         <ThemedView style={styles.optionsContainer}>
+      <ScrollView>
+         <View style={styles.optionsContainer}>
             {THEME_OPTIONS.map((option) => {
                const isSelected = themeMode === option.mode;
                return (
@@ -144,25 +121,15 @@ export default function ThemeScreen() {
                   </Pressable>
                );
             })}
-         </ThemedView>
-      </ParallaxScrollView>
+         </View>
+      </ScrollView>
    );
 }
 
 const styles = StyleSheet.create({
-   headerImage: {
-      color: '#808080',
-      bottom: -90,
-      left: -35,
-      position: 'absolute',
-   },
-   titleContainer: {
-      flexDirection: 'row',
-      gap: Spacing.sm,
-      marginBottom: Spacing.md,
-   },
    optionsContainer: {
       gap: Spacing.md,
+      margin: Spacing.md,
    },
    option: {
       borderRadius: BorderRadius.lg,
