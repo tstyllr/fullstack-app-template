@@ -3,6 +3,7 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
+import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
 import { Platform } from 'react-native';
 
 export const tintColorLight = '#0a7ea4';
@@ -12,6 +13,8 @@ export const whiteColor = '#fff';
 export const Colors = {
    light: {
       background: '#fff',
+      backgroundSecondary: '#f6f8fa',
+      card: '#fff',
       tint: tintColorLight,
       icon: '#687076',
       tabIconDefault: '#687076',
@@ -27,13 +30,15 @@ export const Colors = {
       overlay: 'rgba(0, 0, 0, 0.5)',
       separator: '#d1d5db',
       // 文本层级
-      textPrimary: '#11181C',
+      text: '#11181C',
       textSecondary: '#687076',
       textTertiary: '#9BA1A6',
       placeholder: '#adb5bd',
    },
    dark: {
       background: '#151718',
+      backgroundSecondary: '#1c1e1f',
+      card: '#1c1e1f',
       tint: tintColorDark,
       icon: '#9BA1A6',
       tabIconDefault: '#9BA1A6',
@@ -49,7 +54,7 @@ export const Colors = {
       overlay: 'rgba(0, 0, 0, 0.7)',
       separator: '#30363d',
       // 文本层级
-      textPrimary: '#ECEDEE',
+      text: '#ECEDEE',
       textSecondary: '#9BA1A6',
       textTertiary: '#6e7681',
       placeholder: '#6e7681',
@@ -145,3 +150,27 @@ export const Typography = {
       fontWeight: 'bold' as const,
    },
 } as const;
+
+export const nativeDarkTheme: Theme = {
+   ...DarkTheme,
+   colors: {
+      primary: Colors.dark.tint,
+      background: Colors.dark.background,
+      card: Colors.dark.card,
+      text: Colors.dark.text,
+      border: Colors.dark.border,
+      notification: Colors.dark.destructive,
+   },
+};
+
+export const nativeLightTheme: Theme = {
+   ...DefaultTheme,
+   colors: {
+      primary: Colors.light.tint,
+      background: Colors.light.background,
+      card: Colors.light.card,
+      text: Colors.light.text,
+      border: Colors.light.border,
+      notification: Colors.light.destructive,
+   },
+};

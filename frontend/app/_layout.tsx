@@ -1,8 +1,4 @@
-import {
-   DarkTheme,
-   DefaultTheme,
-   ThemeProvider as NavigationThemeProvider,
-} from '@react-navigation/native';
+import { ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
@@ -10,13 +6,14 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider } from '@/components/molecules/auth-context';
 import { ThemeProvider } from '@/components/molecules/theme-context';
+import { nativeDarkTheme, nativeLightTheme } from '@/constants/theme';
 
 function RootLayoutNav() {
    const colorScheme = useColorScheme();
 
    return (
       <NavigationThemeProvider
-         value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+         value={colorScheme === 'dark' ? nativeDarkTheme : nativeLightTheme}
       >
          <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(auth)" />

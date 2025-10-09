@@ -44,7 +44,7 @@ export function ThemedButton({
    );
    const customTextColor = useThemeColor(
       { light: lightColor, dark: darkColor },
-      'textPrimary'
+      'text'
    );
    const customBorderColor = useThemeColor(
       { light: lightBorderColor, dark: darkBorderColor },
@@ -71,7 +71,7 @@ export function ThemedButton({
       }
    }
 
-   let textColor: string = useThemeColor({}, 'textPrimary');
+   let textColor: string = useThemeColor({}, 'text');
    if (lightColor || darkColor) {
       textColor = customTextColor;
    } else {
