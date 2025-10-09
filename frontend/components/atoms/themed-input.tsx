@@ -30,10 +30,7 @@ export function ThemedInput({
    rightButton,
    ...rest
 }: ThemedInputProps) {
-   const color = useThemeColor(
-      { light: lightColor, dark: darkColor },
-      'textPrimary'
-   );
+   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
    const backgroundColor = useThemeColor(
       { light: lightBackgroundColor, dark: darkBackgroundColor },
       'background'

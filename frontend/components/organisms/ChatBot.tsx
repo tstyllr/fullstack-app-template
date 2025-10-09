@@ -30,7 +30,7 @@ export default function ChatBot() {
 
    // Theme colors
    const backgroundColor = useThemeColor({}, 'background');
-   const textColor = useThemeColor({}, 'textPrimary');
+   const textColor = useThemeColor({}, 'text');
    const tintColor = useThemeColor({}, 'tint');
    const borderColor = useThemeColor({}, 'border');
 
