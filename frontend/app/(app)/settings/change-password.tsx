@@ -6,6 +6,7 @@ import { Spacing } from '@/constants/theme';
 import { ChangePasswordForm } from '@/components/organisms/change-password-form';
 import { useAuth } from '@/components/molecules/auth-context';
 import { setPassword } from '@/lib/api/auth';
+import { ResponsiveContainer } from '@/components/atoms/responsive-container';
 
 interface FormData {
    phone: string;
@@ -75,10 +76,12 @@ export default function ChangePasswordScreen() {
 
    return (
       <ScrollView style={styles.container}>
-         <ChangePasswordForm
-            phone={user?.phone || ''}
-            onSubmitFormData={handleSubmitFormData}
-         />
+         <ResponsiveContainer>
+            <ChangePasswordForm
+               phone={user?.phone || ''}
+               onSubmitFormData={handleSubmitFormData}
+            />
+         </ResponsiveContainer>
       </ScrollView>
    );
 }

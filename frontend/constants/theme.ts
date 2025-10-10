@@ -151,6 +151,26 @@ export const Typography = {
    },
 } as const;
 
+/**
+ * 布局系统 - 响应式布局配置
+ * 用于在移动优先设计的基础上适配 Web 平台
+ */
+export const Layout = {
+   // 内容最大宽度 - 防止在大屏幕上内容过度拉伸
+   maxWidth: {
+      sm: 640, // 小型内容（如聊天框）
+      md: 768, // 中等内容（如表单）
+      lg: 1024, // 大型内容（如仪表盘）
+      xl: 1280, // 超大内容（如数据展示）
+   },
+   // 断点 - 用于响应式设计
+   breakpoints: {
+      mobile: 0,
+      tablet: 768,
+      desktop: 1024,
+   },
+} as const;
+
 export const nativeDarkTheme: Theme = {
    ...DarkTheme,
    colors: {

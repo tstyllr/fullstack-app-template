@@ -8,6 +8,7 @@ import { useAuth } from '@/components/molecules/auth-context';
 import { logout as logoutApi } from '@/lib/api/auth';
 import { Spacing } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { ResponsiveContainer } from '@/components/atoms/responsive-container';
 
 export default function AccountScreen() {
    const router = useRouter();
@@ -56,30 +57,32 @@ export default function AccountScreen() {
 
    return (
       <ScrollView style={[styles.container, { backgroundColor }]}>
-         <SettingItem
-            icon="person.circle.fill"
-            title="账号信息"
-            subtitle={user?.phone}
-            onPress={() => {}}
-            showArrow={false}
-         />
+         <ResponsiveContainer>
+            <SettingItem
+               icon="person.circle.fill"
+               title="账号信息"
+               subtitle={user?.phone}
+               onPress={() => {}}
+               showArrow={false}
+            />
 
-         <SettingItem
-            icon="key.fill"
-            title="修改密码"
-            subtitle="设置或修改登录密码"
-            onPress={() => router.push('/settings/change-password' as any)}
-         />
+            <SettingItem
+               icon="key.fill"
+               title="修改密码"
+               subtitle="设置或修改登录密码"
+               onPress={() => router.push('/settings/change-password' as any)}
+            />
 
-         <ThemedButton
-            title="退出登录"
-            variant="outline"
-            onPress={handleLogout}
-            lightColor={destructiveColor}
-            darkColor={destructiveColor}
-            lightBorderColor={destructiveColor}
-            darkBorderColor={destructiveColor}
-         />
+            <ThemedButton
+               title="退出登录"
+               variant="outline"
+               onPress={handleLogout}
+               lightColor={destructiveColor}
+               darkColor={destructiveColor}
+               lightBorderColor={destructiveColor}
+               darkBorderColor={destructiveColor}
+            />
+         </ResponsiveContainer>
       </ScrollView>
    );
 }
