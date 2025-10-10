@@ -1,12 +1,16 @@
 import { StyleSheet } from 'react-native';
-import { ThemedView } from '@/components/atoms/themed-view';
+import { ResponsiveContainer } from '@/components/atoms/responsive-container';
 import ChatBot from '@/components/organisms/ChatBot';
 
 export default function HomeScreen() {
    return (
-      <ThemedView style={styles.container}>
+      <ResponsiveContainer
+         maxWidth="sm"
+         enableHorizontalPadding={false}
+         style={styles.container}
+      >
          <ChatBot />
-      </ThemedView>
+      </ResponsiveContainer>
    );
 }
 

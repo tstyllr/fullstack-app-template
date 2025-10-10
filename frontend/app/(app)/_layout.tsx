@@ -1,5 +1,6 @@
 import { Redirect, Stack } from 'expo-router';
 import { useAuth } from '@/components/molecules/auth-context';
+import { ResponsiveHeader } from '@/components/molecules/responsive-header';
 
 export default function AppLayout() {
    const { isAuthenticated, isLoading } = useAuth();
@@ -15,20 +16,37 @@ export default function AppLayout() {
    }
 
    return (
-      <Stack>
+      <Stack
+         screenOptions={{
+            header: (props) => <ResponsiveHeader title={props.options.title} />,
+         }}
+      >
          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-         <Stack.Screen name="settings/theme" options={{ title: '主题' }} />
+         <Stack.Screen
+            name="settings/theme"
+            options={{
+               title: '主题',
+            }}
+         />
          <Stack.Screen
             name="settings/account"
-            options={{ title: '账号设置' }}
+            options={{
+               title: '账号设置',
+            }}
          />
          <Stack.Screen
             name="settings/change-password"
-            options={{ title: '修改密码' }}
+            options={{
+               title: '修改密码',
+            }}
          />
          <Stack.Screen
             name="modal"
-            options={{ presentation: 'modal', title: 'Modal' }}
+            options={{
+               presentation: 'modal',
+               headerShown: true,
+               header: () => <ResponsiveHeader title="Modal" maxWidth="lg" />,
+            }}
          />
       </Stack>
    );

@@ -4,6 +4,7 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { ThemedView } from '@/components/atoms/themed-view';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
+import { ResponsiveContainer } from '@/components/atoms/responsive-container';
 import { useTheme, ThemeMode } from '@/components/molecules/theme-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { Spacing, BorderRadius, Typography } from '@/constants/theme';
@@ -51,77 +52,79 @@ export default function ThemeScreen() {
 
    return (
       <ScrollView>
-         <View style={styles.optionsContainer}>
-            {THEME_OPTIONS.map((option) => {
-               const isSelected = themeMode === option.mode;
-               return (
-                  <Pressable
-                     key={option.mode}
-                     onPress={() => handleSelectTheme(option.mode)}
-                     style={({ pressed }) => [
-                        styles.option,
-                        {
-                           borderColor: isSelected ? tintColor : borderColor,
-                           borderWidth: isSelected ? 2 : 1,
-                        },
-                        pressed && styles.optionPressed,
-                     ]}
-                  >
-                     <ThemedView style={styles.optionContent}>
-                        <ThemedView style={styles.optionLeft}>
-                           <ThemedView
-                              style={[
-                                 styles.iconContainer,
-                                 {
-                                    backgroundColor: isSelected
-                                       ? tintColor + '20'
-                                       : 'transparent',
-                                 },
-                              ]}
-                           >
-                              <IconSymbol
-                                 name={option.icon}
-                                 size={28}
-                                 color={isSelected ? tintColor : iconColor}
-                              />
-                           </ThemedView>
-                           <ThemedView style={styles.textContainer}>
-                              <ThemedText
-                                 type="defaultSemiBold"
+         <ResponsiveContainer>
+            <View style={styles.optionsContainer}>
+               {THEME_OPTIONS.map((option) => {
+                  const isSelected = themeMode === option.mode;
+                  return (
+                     <Pressable
+                        key={option.mode}
+                        onPress={() => handleSelectTheme(option.mode)}
+                        style={({ pressed }) => [
+                           styles.option,
+                           {
+                              borderColor: isSelected ? tintColor : borderColor,
+                              borderWidth: isSelected ? 2 : 1,
+                           },
+                           pressed && styles.optionPressed,
+                        ]}
+                     >
+                        <ThemedView style={styles.optionContent}>
+                           <ThemedView style={styles.optionLeft}>
+                              <ThemedView
                                  style={[
-                                    styles.optionTitle,
+                                    styles.iconContainer,
                                     {
-                                       color: isSelected
-                                          ? tintColor
-                                          : undefined,
+                                       backgroundColor: isSelected
+                                          ? tintColor + '20'
+                                          : 'transparent',
                                     },
                                  ]}
                               >
-                                 {option.title}
-                              </ThemedText>
-                              <ThemedText
-                                 style={[
-                                    styles.optionDescription,
-                                    { color: iconColor },
-                                 ]}
-                              >
-                                 {option.description}
-                              </ThemedText>
+                                 <IconSymbol
+                                    name={option.icon}
+                                    size={28}
+                                    color={isSelected ? tintColor : iconColor}
+                                 />
+                              </ThemedView>
+                              <ThemedView style={styles.textContainer}>
+                                 <ThemedText
+                                    type="defaultSemiBold"
+                                    style={[
+                                       styles.optionTitle,
+                                       {
+                                          color: isSelected
+                                             ? tintColor
+                                             : undefined,
+                                       },
+                                    ]}
+                                 >
+                                    {option.title}
+                                 </ThemedText>
+                                 <ThemedText
+                                    style={[
+                                       styles.optionDescription,
+                                       { color: iconColor },
+                                    ]}
+                                 >
+                                    {option.description}
+                                 </ThemedText>
+                              </ThemedView>
                            </ThemedView>
+                           {isSelected && (
+                              <IconSymbol
+                                 name="checkmark.circle.fill"
+                                 size={24}
+                                 color={tintColor}
+                                 style={styles.checkIcon}
+                              />
+                           )}
                         </ThemedView>
-                        {isSelected && (
-                           <IconSymbol
-                              name="checkmark.circle.fill"
-                              size={24}
-                              color={tintColor}
-                              style={styles.checkIcon}
-                           />
-                        )}
-                     </ThemedView>
-                  </Pressable>
-               );
-            })}
-         </View>
+                     </Pressable>
+                  );
+               })}
+            </View>
+         </ResponsiveContainer>
       </ScrollView>
    );
 }
