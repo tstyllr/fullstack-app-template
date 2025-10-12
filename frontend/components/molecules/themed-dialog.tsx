@@ -7,10 +7,10 @@ import {
    Platform,
    type ModalProps,
 } from 'react-native';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { ThemedButton } from '@/components/atoms/themed-button';
 import { BorderRadius, Spacing, Layout } from '@/constants/theme';
+import useThemeColors from '@/hooks/use-theme-colors';
 
 export type ThemedDialogProps = Omit<ModalProps, 'transparent'> & {
    /**
@@ -80,17 +80,7 @@ export function ThemedDialog({
    darkBackgroundColor,
    ...modalProps
 }: ThemedDialogProps) {
-   const overlayColor = useThemeColor(
-      { light: lightOverlayColor, dark: darkOverlayColor },
-      'overlay'
-   );
-
-   const backgroundColor = useThemeColor(
-      { light: lightBackgroundColor, dark: darkBackgroundColor },
-      'card'
-   );
-
-   const borderColor = useThemeColor({}, 'border');
+   const colors = useThemeColors();
 
    const handleOverlayPress = () => {
       if (closeOnOverlayPress) {
@@ -112,11 +102,14 @@ export function ThemedDialog({
          {...modalProps}
       >
          <Pressable style={styles.overlay} onPress={handleOverlayPress}>
-            <View style={[styles.overlay, { backgroundColor: overlayColor }]}>
+            <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
                <Pressable
                   style={[
                      styles.dialogContainer,
-                     { backgroundColor, borderColor },
+                     {
+                        backgroundColor: colors.background,
+                        borderColor: colors.border,
+                     },
                   ]}
                   onPress={handleContentPress}
                >

@@ -11,11 +11,11 @@ import {
 } from 'react-native-gifted-chat';
 import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
 import { useAuth } from '@/components/molecules/auth-context';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { sendMessage } from '@/lib/api/chat';
 import Markdown from 'react-native-markdown-display';
 import { Typography } from '@/constants/theme';
+import useThemeColors from '@/hooks/use-theme-colors';
 
 export default function ChatBot() {
    const [messages, setMessages] = useState<IMessage[]>([]);
@@ -29,10 +29,7 @@ export default function ChatBot() {
    const isDark = colorScheme === 'dark';
 
    // Theme colors
-   const backgroundColor = useThemeColor({}, 'background');
-   const textColor = useThemeColor({}, 'text');
-   const tintColor = useThemeColor({}, 'tint');
-   const borderColor = useThemeColor({}, 'border');
+   const colors = useThemeColors();
 
    useEffect(() => {
       // Add welcome message
@@ -156,7 +153,7 @@ export default function ChatBot() {
             {...props}
             wrapperStyle={{
                right: {
-                  backgroundColor: tintColor,
+                  backgroundColor: colors.tint,
                   marginVertical: 8,
                },
                left: {
@@ -169,7 +166,7 @@ export default function ChatBot() {
                   color: isDark ? '#fff' : '#fff',
                },
                left: {
-                  color: textColor,
+                  color: colors.text,
                },
             }}
             renderMessageText={(messageProps) => {
@@ -184,14 +181,14 @@ export default function ChatBot() {
                         <Markdown
                            style={{
                               body: {
-                                 color: textColor,
+                                 color: colors.text,
                                  ...Typography.default,
                               },
                               code_inline: {
                                  backgroundColor: isDark
                                     ? '#1a202c'
                                     : '#e2e8f0',
-                                 color: textColor,
+                                 color: colors.text,
                                  ...Typography.small,
                                  padding: 4,
                                  borderRadius: 4,
@@ -200,7 +197,7 @@ export default function ChatBot() {
                                  backgroundColor: isDark
                                     ? '#1a202c'
                                     : '#e2e8f0',
-                                 color: textColor,
+                                 color: colors.text,
                                  ...Typography.small,
                                  padding: 8,
                                  borderRadius: 4,
@@ -209,7 +206,7 @@ export default function ChatBot() {
                                  backgroundColor: isDark
                                     ? '#1a202c'
                                     : '#e2e8f0',
-                                 color: textColor,
+                                 color: colors.text,
                                  ...Typography.small,
                                  padding: 8,
                                  borderRadius: 4,
@@ -226,7 +223,7 @@ export default function ChatBot() {
                   <MessageText
                      {...messageProps}
                      textStyle={{
-                        left: { color: textColor },
+                        left: { color: colors.text },
                         right: { color: '#fff' },
                      }}
                   />
@@ -241,7 +238,7 @@ export default function ChatBot() {
          <Send
             {...props}
             containerStyle={styles.sendContainer}
-            textStyle={{ color: tintColor }}
+            textStyle={{ color: colors.tint }}
          />
       );
    };
@@ -253,12 +250,12 @@ export default function ChatBot() {
             containerStyle={[
                styles.inputToolbar,
                {
-                  backgroundColor: backgroundColor,
-                  borderTopColor: borderColor,
+                  backgroundColor: colors.background,
+                  borderTopColor: colors.border,
                },
             ]}
             primaryStyle={{ alignItems: 'center' }}
-            textInputStyle={{ color: textColor }}
+            textInputStyle={{ color: colors.text }}
          />
       );
    };
@@ -278,7 +275,7 @@ export default function ChatBot() {
       if (isTyping) {
          return (
             <View style={styles.typingIndicator}>
-               <ActivityIndicator size="small" color={tintColor} />
+               <ActivityIndicator size="small" color={colors.tint} />
             </View>
          );
       }
@@ -321,7 +318,7 @@ export default function ChatBot() {
             placeholderTextColor: isDark ? '#718096' : '#a0aec0',
          }}
          messagesContainerStyle={{
-            backgroundColor: backgroundColor,
+            backgroundColor: colors.background,
          }}
          bottomOffset={0}
       />

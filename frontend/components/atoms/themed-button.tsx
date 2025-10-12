@@ -5,20 +5,14 @@ import {
    type PressableProps,
    ActivityIndicator,
 } from 'react-native';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { ThemedText } from './themed-text';
 import { BorderRadius, Spacing, Typography } from '@/constants/theme';
+import useThemeColors from '@/hooks/use-theme-colors';
 
 export type ThemedButtonProps = PressableProps & {
    title: string;
    variant?: 'primary' | 'secondary' | 'outline';
    loading?: boolean;
-   lightColor?: string;
-   darkColor?: string;
-   lightBackgroundColor?: string;
-   darkBackgroundColor?: string;
-   lightBorderColor?: string;
-   darkBorderColor?: string;
 };
 
 export function ThemedButton({
@@ -27,74 +21,41 @@ export function ThemedButton({
    loading = false,
    disabled,
    style,
-   lightColor,
-   darkColor,
-   lightBackgroundColor,
-   darkBackgroundColor,
-   lightBorderColor,
-   darkBorderColor,
    ...rest
 }: ThemedButtonProps) {
-   const tintColor = useThemeColor({}, 'tint');
-   const defaultBackgroundColor = useThemeColor({}, 'background');
-   const primaryTextColor = useThemeColor({}, 'background'); // 使用背景色作为 primary 按钮的文字色，形成对比
-   const customBackgroundColor = useThemeColor(
-      { light: lightBackgroundColor, dark: darkBackgroundColor },
-      'tint'
-   );
-   const customTextColor = useThemeColor(
-      { light: lightColor, dark: darkColor },
-      'text'
-   );
-   const customBorderColor = useThemeColor(
-      { light: lightBorderColor, dark: darkBorderColor },
-      'tint'
-   );
+   const colors = useThemeColors();
 
    // Determine colors based on variant
    let backgroundColor: string;
-   if (lightBackgroundColor || darkBackgroundColor) {
-      backgroundColor = customBackgroundColor;
-   } else {
-      switch (variant) {
-         case 'primary':
-            backgroundColor = tintColor;
-            break;
-         case 'secondary':
-            backgroundColor = defaultBackgroundColor;
-            break;
-         case 'outline':
-            backgroundColor = 'transparent';
-            break;
-         default:
-            backgroundColor = tintColor;
-      }
+   switch (variant) {
+      case 'primary':
+         backgroundColor = colors.tint;
+         break;
+      case 'secondary':
+         backgroundColor = colors.background;
+         break;
+      case 'outline':
+         backgroundColor = 'transparent';
+         break;
+      default:
+         backgroundColor = colors.tint;
    }
 
-   let textColor: string = useThemeColor({}, 'text');
-   if (lightColor || darkColor) {
-      textColor = customTextColor;
-   } else {
-      switch (variant) {
-         case 'primary':
-            textColor = primaryTextColor; // 浅色模式：深色背景+浅色文字，暗黑模式：浅色背景+深色文字
-            break;
-         case 'secondary':
-         case 'outline':
-            textColor = tintColor;
-            break;
-         default:
-            break;
-      }
+   let textColor: string;
+   switch (variant) {
+      case 'primary':
+         textColor = colors.background; // 浅色模式：深色背景+浅色文字，暗黑模式：浅色背景+深色文字
+         break;
+      case 'secondary':
+      case 'outline':
+         textColor = colors.tint;
+         break;
+      default:
+         textColor = colors.text;
    }
 
    // Determine border color
-   let borderColor: string;
-   if (lightBorderColor || darkBorderColor) {
-      borderColor = customBorderColor;
-   } else {
-      borderColor = variant === 'outline' ? tintColor : 'transparent';
-   }
+   const borderColor = variant === 'outline' ? colors.tint : 'transparent';
 
    const isDisabled = disabled || loading;
 

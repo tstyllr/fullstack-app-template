@@ -6,8 +6,8 @@ import { ThemedCard } from '@/components/atoms/themed-card';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { ResponsiveContainer } from '@/components/atoms/responsive-container';
 import { useTheme, ThemeMode } from '@/components/molecules/theme-context';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { Spacing, BorderRadius, Typography } from '@/constants/theme';
+import useThemeColors from '@/hooks/use-theme-colors';
 
 interface ThemeOption {
    mode: ThemeMode;
@@ -39,9 +39,7 @@ const THEME_OPTIONS: ThemeOption[] = [
 
 export default function ThemeScreen() {
    const { themeMode, setThemeMode } = useTheme();
-   const iconColor = useThemeColor({}, 'icon');
-   const tintColor = useThemeColor({}, 'tint');
-   const borderColor = useThemeColor({}, 'border');
+   const colors = useThemeColors();
 
    const handleSelectTheme = (mode: ThemeMode) => {
       if (mode !== themeMode) {
@@ -63,7 +61,9 @@ export default function ThemeScreen() {
                         style={({ pressed }) => [
                            styles.option,
                            {
-                              borderColor: isSelected ? tintColor : borderColor,
+                              borderColor: isSelected
+                                 ? colors.tint
+                                 : colors.border,
                               borderWidth: isSelected ? 2 : 1,
                            },
                            pressed && styles.optionPressed,
@@ -76,7 +76,7 @@ export default function ThemeScreen() {
                                     styles.iconContainer,
                                     {
                                        backgroundColor: isSelected
-                                          ? tintColor + '20'
+                                          ? colors.tint + '20'
                                           : 'transparent',
                                     },
                                  ]}
@@ -84,7 +84,9 @@ export default function ThemeScreen() {
                                  <IconSymbol
                                     name={option.icon}
                                     size={28}
-                                    color={isSelected ? tintColor : iconColor}
+                                    color={
+                                       isSelected ? colors.tint : colors.icon
+                                    }
                                  />
                               </ThemedCard>
                               <ThemedCard style={styles.textContainer}>
@@ -94,7 +96,7 @@ export default function ThemeScreen() {
                                        styles.optionTitle,
                                        {
                                           color: isSelected
-                                             ? tintColor
+                                             ? colors.tint
                                              : undefined,
                                        },
                                     ]}
@@ -104,7 +106,7 @@ export default function ThemeScreen() {
                                  <ThemedText
                                     style={[
                                        styles.optionDescription,
-                                       { color: iconColor },
+                                       { color: colors.icon },
                                     ]}
                                  >
                                     {option.description}
@@ -115,7 +117,7 @@ export default function ThemeScreen() {
                               <IconSymbol
                                  name="checkmark.circle.fill"
                                  size={24}
-                                 color={tintColor}
+                                 color={colors.tint}
                                  style={styles.checkIcon}
                               />
                            )}

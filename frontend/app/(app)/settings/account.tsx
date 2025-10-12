@@ -9,14 +9,14 @@ import { SettingItem } from '@/components/molecules/setting-item';
 import { useAuth } from '@/components/molecules/auth-context';
 import { logout as logoutApi } from '@/lib/api/auth';
 import { Spacing } from '@/constants/theme';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { ResponsiveContainer } from '@/components/atoms/responsive-container';
 import { showApiError } from '@/lib/utils/toast';
+import useThemeColors from '@/hooks/use-theme-colors';
 
 export default function AccountScreen() {
    const router = useRouter();
    const { user, logout, refreshToken } = useAuth();
-   const destructiveColor = useThemeColor({}, 'destructive');
+   const colors = useThemeColors();
    const [showLogoutDialog, setShowLogoutDialog] = useState(false);
    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -76,10 +76,6 @@ export default function AccountScreen() {
                   loading={isLoggingOut}
                   variant="outline"
                   onPress={handleLogout}
-                  lightColor={destructiveColor}
-                  darkColor={destructiveColor}
-                  lightBorderColor={destructiveColor}
-                  darkBorderColor={destructiveColor}
                />
             </ResponsiveContainer>
          </ScrollView>
