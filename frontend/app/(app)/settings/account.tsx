@@ -14,7 +14,6 @@ export default function AccountScreen() {
    const router = useRouter();
    const { user, logout, refreshToken } = useAuth();
    const destructiveColor = useThemeColor({}, 'destructive');
-   const backgroundColor = useThemeColor({}, 'background');
 
    const handleLogout = async () => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -56,7 +55,7 @@ export default function AccountScreen() {
    };
 
    return (
-      <ScrollView style={[styles.container, { backgroundColor }]}>
+      <ScrollView>
          <ResponsiveContainer>
             <SettingItem
                icon="person.circle.fill"
@@ -74,6 +73,7 @@ export default function AccountScreen() {
             />
 
             <ThemedButton
+               style={styles.logoutButton}
                title="退出登录"
                variant="outline"
                onPress={handleLogout}
@@ -88,5 +88,8 @@ export default function AccountScreen() {
 }
 
 const styles = StyleSheet.create({
-   container: { flex: 1, padding: Spacing.md },
+   logoutButton: {
+      marginTop: Spacing.lg,
+      marginHorizontal: Spacing.md,
+   },
 });

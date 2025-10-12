@@ -106,7 +106,7 @@ export function ChangePasswordForm({
    };
 
    return (
-      <View style={styles.container}>
+      <View>
          {/* 手机号码 - 只读 */}
          <Controller
             control={control}
@@ -200,10 +200,6 @@ export function ChangePasswordForm({
 }
 
 const styles = StyleSheet.create({
-   container: {
-      width: '100%',
-      paddingHorizontal: Spacing.md,
-   },
    sendButton: {
       paddingHorizontal: Spacing.sm,
       minWidth: 0,

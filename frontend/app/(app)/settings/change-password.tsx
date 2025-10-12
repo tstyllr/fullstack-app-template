@@ -1,4 +1,4 @@
-import { StyleSheet, Alert, Platform, ScrollView } from 'react-native';
+import { StyleSheet, Alert, Platform, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
@@ -75,12 +75,14 @@ export default function ChangePasswordScreen() {
    };
 
    return (
-      <ScrollView style={styles.container}>
+      <ScrollView>
          <ResponsiveContainer>
-            <ChangePasswordForm
-               phone={user?.phone || ''}
-               onSubmitFormData={handleSubmitFormData}
-            />
+            <View style={styles.container}>
+               <ChangePasswordForm
+                  phone={user?.phone || ''}
+                  onSubmitFormData={handleSubmitFormData}
+               />
+            </View>
          </ResponsiveContainer>
       </ScrollView>
    );
@@ -88,7 +90,6 @@ export default function ChangePasswordScreen() {
 
 const styles = StyleSheet.create({
    container: {
-      flex: 1,
-      paddingVertical: Spacing.md,
+      padding: Spacing.md,
    },
 });

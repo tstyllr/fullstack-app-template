@@ -1,6 +1,5 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { ThemedView } from '@/components/atoms/themed-view';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { useThemeColor } from '@/hooks/use-theme-color';
@@ -38,24 +37,24 @@ export function SettingItem({
             pressed && styles.pressed,
          ]}
       >
-         <ThemedView style={styles.content}>
+         <View style={styles.content}>
             {icon && (
-               <ThemedView style={styles.iconContainer}>
+               <View style={styles.iconContainer}>
                   <IconSymbol name={icon} size={24} color={iconColor} />
-               </ThemedView>
+               </View>
             )}
-            <ThemedView style={styles.textContainer}>
+            <View style={styles.textContainer}>
                <ThemedText style={styles.title}>{title}</ThemedText>
                {subtitle && (
                   <ThemedText style={[styles.subtitle, { color: iconColor }]}>
                      {subtitle}
                   </ThemedText>
                )}
-            </ThemedView>
+            </View>
             {showArrow && (
                <IconSymbol name="chevron.right" size={20} color={iconColor} />
             )}
-         </ThemedView>
+         </View>
       </Pressable>
    );
 }

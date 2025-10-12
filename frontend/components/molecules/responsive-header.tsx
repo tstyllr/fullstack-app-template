@@ -1,9 +1,8 @@
-import { StyleSheet, Pressable, Platform } from 'react-native';
+import { StyleSheet, Pressable, Platform, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
-import { ThemedView } from '@/components/atoms/themed-view';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { useResponsive } from '@/hooks/use-responsive';
@@ -84,7 +83,7 @@ export function ResponsiveHeader({
    };
 
    return (
-      <ThemedView
+      <View
          style={[
             styles.container,
             {
@@ -93,8 +92,8 @@ export function ResponsiveHeader({
             },
          ]}
       >
-         <ThemedView style={styles.wrapper}>
-            <ThemedView
+         <View style={styles.wrapper}>
+            <View
                style={[
                   styles.contentContainer,
                   shouldConstrainWidth && {
@@ -104,7 +103,7 @@ export function ResponsiveHeader({
                ]}
             >
                {/* 左侧返回按钮 */}
-               <ThemedView style={styles.leftSection}>
+               <View style={styles.leftSection}>
                   {showBackButton && (
                      <Pressable
                         onPress={handleBackPress}
@@ -120,10 +119,10 @@ export function ResponsiveHeader({
                         />
                      </Pressable>
                   )}
-               </ThemedView>
+               </View>
 
                {/* 中间标题 */}
-               <ThemedView style={styles.centerSection}>
+               <View style={styles.centerSection}>
                   {title && (
                      <ThemedText
                         type="defaultSemiBold"
@@ -133,16 +132,14 @@ export function ResponsiveHeader({
                         {title}
                      </ThemedText>
                   )}
-               </ThemedView>
+               </View>
 
                {/* 右侧操作按钮 */}
-               <ThemedView style={styles.rightSection}>
-                  {rightButton}
-               </ThemedView>
-            </ThemedView>
+               <View style={styles.rightSection}>{rightButton}</View>
+            </View>
 
             {/* 分割线 */}
-            <ThemedView
+            <View
                style={[
                   styles.divider,
                   {
@@ -154,8 +151,8 @@ export function ResponsiveHeader({
                   },
                ]}
             />
-         </ThemedView>
-      </ThemedView>
+         </View>
+      </View>
    );
 }
 

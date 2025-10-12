@@ -12,7 +12,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ThemedText } from '@/components/atoms/themed-text';
-import { ThemedView } from '@/components/atoms/themed-view';
+import { ThemedCard } from '@/components/atoms/themed-card';
 import { ThemedInput } from '@/components/atoms/themed-input';
 import { ThemedButton } from '@/components/atoms/themed-button';
 import { useAuth } from '@/components/molecules/auth-context';
@@ -281,7 +281,7 @@ export default function LoginScreen() {
          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
          <ScrollView contentContainerStyle={styles.scrollContent}>
-            <ThemedView style={styles.content}>
+            <ThemedCard style={styles.content}>
                <ThemedText style={styles.title}>欢迎登录</ThemedText>
 
                {isCodeMode ? (
@@ -411,7 +411,7 @@ export default function LoginScreen() {
                   onPress={handleSwitchMode}
                   disabled={isLoading}
                />
-            </ThemedView>
+            </ThemedCard>
          </ScrollView>
       </KeyboardAvoidingView>
    );
