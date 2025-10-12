@@ -5,7 +5,6 @@ import {
    Platform,
    ScrollView,
    StyleSheet,
-   Alert,
    TouchableOpacity,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
@@ -36,6 +35,7 @@ import {
    tintColorLight,
    whiteColor,
 } from '@/constants/theme';
+import { showSuccess, showError, showApiError } from '@/lib/utils/toast';
 
 // Zod 验证 Schema
 const codeLoginSchema = z.object({
@@ -137,7 +137,7 @@ export default function LoginScreen() {
       const result = await codeForm.trigger('phone');
       if (!result) {
          const error = codeForm.formState.errors.phone?.message;
-         Alert.alert('错误', error || '请输入正确的手机号');
+         showError({ title: '错误', message: error || '请输入正确的手机号' });
          return;
       }
 
@@ -145,9 +145,9 @@ export default function LoginScreen() {
       try {
          await sendCode({ phone });
          setCountdown(60);
-         Alert.alert('成功', '验证码已发送');
+         showSuccess({ title: '验证码已发送' });
       } catch (error: any) {
-         Alert.alert('错误', error.error || '发送验证码失败');
+         showApiError(error, '发送验证码失败');
       } finally {
          setIsLoading(false);
       }
@@ -175,7 +175,7 @@ export default function LoginScreen() {
             await clearSavedCredentials();
          }
       } catch (error: any) {
-         Alert.alert('错误', error.error || '登录失败');
+         showApiError(error, '登录失败');
       } finally {
          setIsLoading(false);
       }
@@ -204,7 +204,7 @@ export default function LoginScreen() {
             await clearSavedCredentials();
          }
       } catch (error: any) {
-         Alert.alert('错误', error.error || '登录失败');
+         showApiError(error, '登录失败');
       } finally {
          setIsLoading(false);
       }

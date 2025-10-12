@@ -11,6 +11,7 @@ import { logout as logoutApi } from '@/lib/api/auth';
 import { Spacing } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { ResponsiveContainer } from '@/components/atoms/responsive-container';
+import { showApiError } from '@/lib/utils/toast';
 
 export default function AccountScreen() {
    const router = useRouter();
@@ -33,6 +34,8 @@ export default function AccountScreen() {
          }
       } catch (error) {
          console.error('Logout API error:', error);
+         // 显示错误提示，但继续本地登出
+         showApiError(error, '退出登录失败');
          // Continue with local logout even if API call fails
       } finally {
          // Clear local auth state
