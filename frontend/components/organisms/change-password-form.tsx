@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,6 +7,7 @@ import { ThemedInput } from '@/components/atoms/themed-input';
 import { ThemedButton } from '@/components/atoms/themed-button';
 import { Spacing } from '@/constants/theme';
 import { sendCode } from '@/lib/api/auth';
+import { showApiError, showSuccess } from '@/lib/utils';
 
 // 表单数据类型
 interface FormData {
@@ -95,11 +96,9 @@ export function ChangePasswordForm({
          setIsSending(true);
          await sendCode({ phone });
          setCountdown(60);
-         Alert.alert('成功', '验证码已发送，请注意查收');
+         showSuccess({ title: '验证码已发送，请注意查收' });
       } catch (error: any) {
-         const errorMessage =
-            error?.response?.data?.error || error?.message || '发送验证码失败';
-         Alert.alert('错误', errorMessage);
+         showApiError(error, '发送验证码失败');
       } finally {
          setIsSending(false);
       }

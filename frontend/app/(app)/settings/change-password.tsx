@@ -48,7 +48,10 @@ export default function ChangePasswordScreen() {
    };
 
    return (
-      <ScrollView>
+      <ScrollView
+         keyboardDismissMode="interactive"
+         keyboardShouldPersistTaps="handled"
+      >
          <ResponsiveContainer>
             <View style={styles.container}>
                <ChangePasswordForm

@@ -43,7 +43,7 @@ export default function ThemeScreen() {
 
    const handleSelectTheme = (mode: ThemeMode) => {
       if (mode !== themeMode) {
-         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
          setThemeMode(mode);
       }
    };

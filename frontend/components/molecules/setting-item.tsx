@@ -1,5 +1,4 @@
 import { Pressable, StyleSheet, View } from 'react-native';
-import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { Spacing, Typography } from '@/constants/theme';
@@ -23,7 +22,6 @@ export function SettingItem({
    const colors = useThemeColors();
 
    const handlePress = () => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       onPress();
    };
 

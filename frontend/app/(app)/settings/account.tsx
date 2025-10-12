@@ -11,21 +11,19 @@ import { logout as logoutApi } from '@/lib/api/auth';
 import { Spacing } from '@/constants/theme';
 import { ResponsiveContainer } from '@/components/atoms/responsive-container';
 import { showApiError } from '@/lib/utils/toast';
-import useThemeColors from '@/hooks/use-theme-colors';
 
 export default function AccountScreen() {
    const router = useRouter();
    const { user, logout, refreshToken } = useAuth();
-   const colors = useThemeColors();
    const [showLogoutDialog, setShowLogoutDialog] = useState(false);
    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
    const handleLogout = () => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       setShowLogoutDialog(true);
    };
 
    const confirmLogout = async () => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       setIsLoggingOut(true);
       try {
          // Call backend logout API if refreshToken exists

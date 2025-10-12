@@ -37,6 +37,7 @@ import {
 } from '@/constants/theme';
 import { showSuccess, showError, showApiError } from '@/lib/utils/toast';
 import { ResponsiveContainer } from '@/components/atoms/responsive-container';
+import * as Haptics from 'expo-haptics';
 
 // Zod 验证 Schema
 const codeLoginSchema = z.object({
@@ -157,6 +158,7 @@ export default function LoginScreen() {
 
    // 验证码登录
    const handleLoginWithCode = async (data: CodeLoginForm) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       setIsLoading(true);
       try {
          const response = await loginWithCode({
@@ -185,6 +187,7 @@ export default function LoginScreen() {
 
    // 密码登录
    const handleLoginWithPassword = async (data: PasswordLoginForm) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       setIsLoading(true);
       try {
          const response = await loginWithPassword({
@@ -282,7 +285,11 @@ export default function LoginScreen() {
          style={styles.container}
          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-         <ScrollView contentContainerStyle={styles.scrollContent}>
+         <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardDismissMode="interactive"
+            keyboardShouldPersistTaps="handled"
+         >
             <ResponsiveContainer maxWidth="md">
                <View
                   style={[
