@@ -1,5 +1,4 @@
-import { StyleSheet, ViewStyle } from 'react-native';
-import { ThemedView } from './themed-view';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 import { Layout } from '@/constants/theme';
 import { useResponsive } from '@/hooks/use-responsive';
 
@@ -15,14 +14,6 @@ interface ResponsiveContainerProps {
     * - 'xl': 1280px（适合仪表盘、数据展示等）
     */
    maxWidth?: MaxWidthSize;
-   /**
-    * 自定义样式
-    */
-   style?: ViewStyle;
-   /**
-    * 是否启用水平内边距（默认 true）
-    */
-   enableHorizontalPadding?: boolean;
 }
 
 /**
@@ -45,27 +36,23 @@ interface ResponsiveContainerProps {
 export function ResponsiveContainer({
    children,
    maxWidth = 'md',
-   style,
-   enableHorizontalPadding = true,
 }: ResponsiveContainerProps) {
    const { shouldConstrainWidth } = useResponsive();
 
    return (
-      <ThemedView style={styles.wrapper}>
-         <ThemedView
+      <View style={styles.wrapper}>
+         <View
             style={[
                styles.container,
                shouldConstrainWidth && {
                   maxWidth: Layout.maxWidth[maxWidth],
                   width: '100%',
                },
-               enableHorizontalPadding && styles.padding,
-               style,
             ]}
          >
             {children}
-         </ThemedView>
-      </ThemedView>
+         </View>
+      </View>
    );
 }
 
@@ -77,8 +64,5 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
       width: '100%',
-   },
-   padding: {
-      paddingHorizontal: 16,
    },
 });

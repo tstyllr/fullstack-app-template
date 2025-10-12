@@ -2,7 +2,7 @@ import { StyleSheet, Pressable, ScrollView, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/atoms/themed-text';
-import { ThemedView } from '@/components/atoms/themed-view';
+import { ThemedCard } from '@/components/atoms/themed-card';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { ResponsiveContainer } from '@/components/atoms/responsive-container';
 import { useTheme, ThemeMode } from '@/components/molecules/theme-context';
@@ -69,9 +69,9 @@ export default function ThemeScreen() {
                            pressed && styles.optionPressed,
                         ]}
                      >
-                        <ThemedView style={styles.optionContent}>
-                           <ThemedView style={styles.optionLeft}>
-                              <ThemedView
+                        <ThemedCard style={styles.optionContent}>
+                           <ThemedCard style={styles.optionLeft}>
+                              <ThemedCard
                                  style={[
                                     styles.iconContainer,
                                     {
@@ -86,8 +86,8 @@ export default function ThemeScreen() {
                                     size={28}
                                     color={isSelected ? tintColor : iconColor}
                                  />
-                              </ThemedView>
-                              <ThemedView style={styles.textContainer}>
+                              </ThemedCard>
+                              <ThemedCard style={styles.textContainer}>
                                  <ThemedText
                                     type="defaultSemiBold"
                                     style={[
@@ -109,8 +109,8 @@ export default function ThemeScreen() {
                                  >
                                     {option.description}
                                  </ThemedText>
-                              </ThemedView>
-                           </ThemedView>
+                              </ThemedCard>
+                           </ThemedCard>
                            {isSelected && (
                               <IconSymbol
                                  name="checkmark.circle.fill"
@@ -119,7 +119,7 @@ export default function ThemeScreen() {
                                  style={styles.checkIcon}
                               />
                            )}
-                        </ThemedView>
+                        </ThemedCard>
                      </Pressable>
                   );
                })}
@@ -132,7 +132,7 @@ export default function ThemeScreen() {
 const styles = StyleSheet.create({
    optionsContainer: {
       gap: Spacing.md,
-      margin: Spacing.md,
+      padding: Spacing.md,
    },
    option: {
       borderRadius: BorderRadius.lg,

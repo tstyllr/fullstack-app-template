@@ -1,15 +1,14 @@
 import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/atoms/themed-text';
-import { ThemedView } from '@/components/atoms/themed-view';
 import { Spacing, Typography } from '@/constants/theme';
 
 export default function NotFoundScreen() {
    return (
       <>
          <Stack.Screen options={{ title: '页面未找到' }} />
-         <ThemedView style={styles.container}>
+         <View style={styles.container}>
             <ThemedText type="title" style={styles.title}>
                404
             </ThemedText>
@@ -19,7 +18,7 @@ export default function NotFoundScreen() {
             <Link href={'/(app)/(tabs)' as any} style={styles.link}>
                <ThemedText type="link">返回首页</ThemedText>
             </Link>
-         </ThemedView>
+         </View>
       </>
    );
 }
