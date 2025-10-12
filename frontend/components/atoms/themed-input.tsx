@@ -1,8 +1,15 @@
 import React from 'react';
-import { StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import {
+   StyleSheet,
+   Text,
+   TextInput,
+   type TextInputProps,
+   View,
+} from 'react-native';
 import { ThemedText } from './themed-text';
 import { BorderRadius, Spacing, Typography } from '@/constants/theme';
+import useThemeColors from '@/hooks/use-theme-colors';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export type ThemedInputProps = TextInputProps & {
    lightColor?: string;
@@ -30,17 +37,8 @@ export function ThemedInput({
    rightButton,
    ...rest
 }: ThemedInputProps) {
-   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-   const backgroundColor = useThemeColor(
-      { light: lightBackgroundColor, dark: darkBackgroundColor },
-      'background'
-   );
-   const borderColor = useThemeColor(
-      { light: lightBorderColor, dark: darkBorderColor },
-      'border'
-   );
-
-   const placeholderColor = useThemeColor({}, 'placeholder'); // Use icon color for placeholder
+   const colors = useThemeColors();
+   const colorScheme = useColorScheme();
 
    return (
       <View style={styles.container}>
@@ -49,20 +47,25 @@ export function ThemedInput({
                {label}
             </ThemedText>
          )}
-         <View style={styles.inputWrapper}>
+         <View
+            style={[
+               styles.inputWrapper,
+               { borderColor: error ? colors.destructive : colors.border },
+            ]}
+         >
             <TextInput
+               keyboardAppearance={colorScheme}
+               underlineColorAndroid="transparent"
                style={[
                   styles.input,
                   {
-                     color,
-                     backgroundColor,
-                     borderColor: error ? '#ef4444' : borderColor,
+                     color: colors.text,
                   },
                   !editable && styles.disabled,
                   rightButton ? styles.inputWithButton : undefined,
                   style,
                ]}
-               placeholderTextColor={placeholderColor}
+               placeholderTextColor={colors.placeholder}
                editable={editable}
                {...rest}
             />
@@ -71,13 +74,9 @@ export function ThemedInput({
             )}
          </View>
          {error && (
-            <ThemedText
-               style={styles.error}
-               lightColor="#ef4444"
-               darkColor="#f87171"
-            >
+            <Text style={[styles.error, { color: colors.destructive }]}>
                {error}
-            </ThemedText>
+            </Text>
          )}
       </View>
    );
@@ -94,13 +93,15 @@ const styles = StyleSheet.create({
    inputWrapper: {
       position: 'relative',
       width: '100%',
-   },
-   input: {
-      ...Typography.default,
-      height: 48,
+      height: Typography.default.fontSize + Spacing.md * 2,
       borderWidth: 1,
       borderRadius: BorderRadius.md,
       paddingHorizontal: Spacing.md,
+      justifyContent: 'center',
+   },
+   input: {
+      fontSize: Typography.default.fontSize,
+      outlineWidth: 0,
    },
    inputWithButton: {
       paddingRight: 100,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
    },
    disabled: {
-      opacity: 0.6,
+      opacity: 0.2,
    },
    error: {
       ...Typography.tiny,
