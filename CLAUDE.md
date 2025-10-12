@@ -205,6 +205,6 @@ Backend includes OpenAI integration:
 - The frontend must be compatible with dark mode
 - This project does not support internationalization; it requires Chinese language support
 - **Frontend Styling**: Never hardcode `margin`, `padding`, `borderRadius`, typography, or colors—always use theme constants from `constants/theme.ts` (`Spacing`, `BorderRadius`, `Typography`, `Colors`, `Layout`, `Fonts`)
-- **Frontend Components**: Prefer themed components (`ThemedView`, `ThemedText`, `ThemedButton`, `ThemedInput`) over React Native primitives (`View`, `Text`, `Button`, `TextInput`) for unified theme management and dark mode support
+- **Frontend Components**: Prefer themed components (`ThemedText`, `ThemedButton`, `ThemedInput`) over React Native primitives (`Text`, `Button`, `TextInput`) for unified theme management and dark mode support
 - **Frontend Icons**: Use `IconSymbol` component for platform-native icons (iOS, Android, Web) without bundling additional assets
 - **Responsive Design**: Use `Layout.maxWidth` and `Layout.breakpoints` from theme constants for responsive web layouts
