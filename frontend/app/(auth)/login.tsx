@@ -11,7 +11,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ThemedText } from '@/components/atoms/themed-text';
-import { ThemedCard } from '@/components/atoms/themed-card';
 import { ThemedInput } from '@/components/atoms/themed-input';
 import { ThemedButton } from '@/components/atoms/themed-button';
 import { useAuth } from '@/components/molecules/auth-context';
@@ -28,6 +27,7 @@ import {
    clearSavedCredentials,
 } from '@/lib/storage/token-storage';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useResponsive } from '@/hooks/use-responsive';
 import {
    Colors,
    Typography,
@@ -36,6 +36,7 @@ import {
    whiteColor,
 } from '@/constants/theme';
 import { showSuccess, showError, showApiError } from '@/lib/utils/toast';
+import { ResponsiveContainer } from '@/components/atoms/responsive-container';
 
 // Zod 验证 Schema
 const codeLoginSchema = z.object({
@@ -63,6 +64,7 @@ export default function LoginScreen() {
    const colorScheme = useColorScheme();
    const colors = Colors[colorScheme ?? 'light'];
    const { login } = useAuth();
+   const { isMobile } = useResponsive();
 
    const [isCodeMode, setIsCodeMode] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
@@ -281,137 +283,147 @@ export default function LoginScreen() {
          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
          <ScrollView contentContainerStyle={styles.scrollContent}>
-            <ThemedCard style={styles.content}>
-               <ThemedText style={styles.title}>欢迎登录</ThemedText>
-
-               {isCodeMode ? (
-                  <React.Fragment key="code-login-mode">
-                     {/* 手机号输入 */}
-                     <Controller
-                        control={codeForm.control}
-                        name="phone"
-                        render={({
-                           field: { onChange, onBlur, value },
-                           fieldState: { error },
-                        }) => (
-                           <ThemedInput
-                              placeholder="手机号"
-                              value={value}
-                              onChangeText={onChange}
-                              onBlur={onBlur}
-                              keyboardType="phone-pad"
-                              maxLength={11}
-                              editable={!isLoading}
-                              error={error?.message}
-                           />
-                        )}
-                     />
-
-                     {/* 验证码输入（带发送按钮） */}
-                     <Controller
-                        control={codeForm.control}
-                        name="code"
-                        render={({
-                           field: { onChange, onBlur, value },
-                           fieldState: { error },
-                        }) => (
-                           <ThemedInput
-                              placeholder="验证码"
-                              value={value}
-                              onChangeText={onChange}
-                              onBlur={onBlur}
-                              keyboardType="number-pad"
-                              maxLength={6}
-                              editable={!isLoading}
-                              error={error?.message}
-                              rightButton={renderSendCodeButton()}
-                           />
-                        )}
-                     />
-
-                     {/* 登录按钮 */}
-                     <ThemedButton
-                        title="登录"
-                        onPress={codeForm.handleSubmit(handleLoginWithCode)}
-                        loading={isLoading}
-                        disabled={isLoading}
-                     />
-                  </React.Fragment>
-               ) : (
-                  <React.Fragment key="password-login-mode">
-                     {/* 手机号输入 */}
-                     <Controller
-                        control={passwordForm.control}
-                        name="phone"
-                        render={({
-                           field: { onChange, onBlur, value },
-                           fieldState: { error },
-                        }) => (
-                           <ThemedInput
-                              placeholder="手机号"
-                              value={value}
-                              onChangeText={onChange}
-                              onBlur={onBlur}
-                              keyboardType="phone-pad"
-                              maxLength={11}
-                              editable={!isLoading}
-                              error={error?.message}
-                           />
-                        )}
-                     />
-
-                     {/* 密码输入 */}
-                     <Controller
-                        control={passwordForm.control}
-                        name="password"
-                        render={({
-                           field: { onChange, onBlur, value },
-                           fieldState: { error },
-                        }) => (
-                           <ThemedInput
-                              placeholder="密码"
-                              value={value}
-                              onChangeText={onChange}
-                              onBlur={onBlur}
-                              secureTextEntry
-                              editable={!isLoading}
-                              error={error?.message}
-                           />
-                        )}
-                     />
-
-                     {/* 登录按钮 */}
-                     <ThemedButton
-                        title="登录"
-                        onPress={passwordForm.handleSubmit(
-                           handleLoginWithPassword
-                        )}
-                        loading={isLoading}
-                        disabled={isLoading}
-                     />
-                  </React.Fragment>
-               )}
-
-               {/* 记住我 */}
-               <TouchableOpacity
-                  style={styles.rememberMeContainer}
-                  onPress={handleRememberMeToggle}
-                  disabled={isLoading}
+            <ResponsiveContainer maxWidth="md">
+               <View
+                  style={[
+                     styles.content,
+                     {
+                        padding: isMobile ? Spacing.lg : Spacing.xl,
+                        margin: isMobile ? 0 : Spacing.lg,
+                     },
+                  ]}
                >
-                  {renderCheckbox()}
-                  <ThemedText style={styles.rememberMeText}>
-                     记住{isCodeMode ? '手机号' : '账号密码'}
-                  </ThemedText>
-               </TouchableOpacity>
+                  <ThemedText style={styles.title}>欢迎登录</ThemedText>
 
-               {/* 切换登录模式 */}
-               <ThemedButton
-                  title={isCodeMode ? '使用密码登录' : '使用验证码登录'}
-                  variant="outline"
-                  onPress={handleSwitchMode}
-                  disabled={isLoading}
-               />
-            </ThemedCard>
+                  {isCodeMode ? (
+                     <React.Fragment key="code-login-mode">
+                        {/* 手机号输入 */}
+                        <Controller
+                           control={codeForm.control}
+                           name="phone"
+                           render={({
+                              field: { onChange, onBlur, value },
+                              fieldState: { error },
+                           }) => (
+                              <ThemedInput
+                                 placeholder="手机号"
+                                 value={value}
+                                 onChangeText={onChange}
+                                 onBlur={onBlur}
+                                 keyboardType="phone-pad"
+                                 maxLength={11}
+                                 editable={!isLoading}
+                                 error={error?.message}
+                              />
+                           )}
+                        />
+
+                        {/* 验证码输入（带发送按钮） */}
+                        <Controller
+                           control={codeForm.control}
+                           name="code"
+                           render={({
+                              field: { onChange, onBlur, value },
+                              fieldState: { error },
+                           }) => (
+                              <ThemedInput
+                                 placeholder="验证码"
+                                 value={value}
+                                 onChangeText={onChange}
+                                 onBlur={onBlur}
+                                 keyboardType="number-pad"
+                                 maxLength={6}
+                                 editable={!isLoading}
+                                 error={error?.message}
+                                 rightButton={renderSendCodeButton()}
+                              />
+                           )}
+                        />
+
+                        {/* 登录按钮 */}
+                        <ThemedButton
+                           title="登录"
+                           onPress={codeForm.handleSubmit(handleLoginWithCode)}
+                           loading={isLoading}
+                           disabled={isLoading}
+                        />
+                     </React.Fragment>
+                  ) : (
+                     <React.Fragment key="password-login-mode">
+                        {/* 手机号输入 */}
+                        <Controller
+                           control={passwordForm.control}
+                           name="phone"
+                           render={({
+                              field: { onChange, onBlur, value },
+                              fieldState: { error },
+                           }) => (
+                              <ThemedInput
+                                 placeholder="手机号"
+                                 value={value}
+                                 onChangeText={onChange}
+                                 onBlur={onBlur}
+                                 keyboardType="phone-pad"
+                                 maxLength={11}
+                                 editable={!isLoading}
+                                 error={error?.message}
+                              />
+                           )}
+                        />
+
+                        {/* 密码输入 */}
+                        <Controller
+                           control={passwordForm.control}
+                           name="password"
+                           render={({
+                              field: { onChange, onBlur, value },
+                              fieldState: { error },
+                           }) => (
+                              <ThemedInput
+                                 placeholder="密码"
+                                 value={value}
+                                 onChangeText={onChange}
+                                 onBlur={onBlur}
+                                 secureTextEntry
+                                 editable={!isLoading}
+                                 error={error?.message}
+                              />
+                           )}
+                        />
+
+                        {/* 登录按钮 */}
+                        <ThemedButton
+                           title="登录"
+                           onPress={passwordForm.handleSubmit(
+                              handleLoginWithPassword
+                           )}
+                           loading={isLoading}
+                           disabled={isLoading}
+                        />
+                     </React.Fragment>
+                  )}
+
+                  {/* 记住我 */}
+                  <TouchableOpacity
+                     style={styles.rememberMeContainer}
+                     onPress={handleRememberMeToggle}
+                     disabled={isLoading}
+                  >
+                     {renderCheckbox()}
+                     <ThemedText style={styles.rememberMeText}>
+                        记住{isCodeMode ? '手机号' : '账号密码'}
+                     </ThemedText>
+                  </TouchableOpacity>
+
+                  {/* 切换登录模式 */}
+                  <ThemedButton
+                     title={isCodeMode ? '使用密码登录' : '使用验证码登录'}
+                     variant="outline"
+                     onPress={handleSwitchMode}
+                     disabled={isLoading}
+                  />
+               </View>
+            </ResponsiveContainer>
          </ScrollView>
       </KeyboardAvoidingView>
    );
@@ -426,7 +438,6 @@ const styles = StyleSheet.create({
    },
    content: {
       flex: 1,
-      padding: Spacing.lg,
       justifyContent: 'center',
    },
    title: {
