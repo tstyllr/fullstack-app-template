@@ -6,8 +6,8 @@ import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/atoms/themed-text';
 import { IconSymbol } from '@/components/atoms/icon-symbol';
 import { useResponsive } from '@/hooks/use-responsive';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { Spacing, Layout, Typography } from '@/constants/theme';
+import useThemeColors from '@/hooks/use-theme-colors';
 
 export interface ResponsiveHeaderProps {
    /**
@@ -61,11 +61,7 @@ export function ResponsiveHeader({
    const router = useRouter();
    const insets = useSafeAreaInsets();
    const { shouldConstrainWidth } = useResponsive();
-
-   const backgroundColor = useThemeColor({}, 'background');
-   const borderColor = useThemeColor({}, 'border');
-   const textColor = useThemeColor({}, 'text');
-   const iconColor = useThemeColor({}, 'icon');
+   const colors = useThemeColors();
 
    const handleBackPress = () => {
       if (Platform.OS !== 'web') {
@@ -88,7 +84,7 @@ export function ResponsiveHeader({
             styles.container,
             {
                paddingTop: insets.top,
-               backgroundColor,
+               backgroundColor: colors.background,
             },
          ]}
       >
@@ -115,7 +111,7 @@ export function ResponsiveHeader({
                         <IconSymbol
                            name="chevron.left"
                            size={24}
-                           color={iconColor}
+                           color={colors.icon}
                         />
                      </Pressable>
                   )}
@@ -124,11 +120,7 @@ export function ResponsiveHeader({
                {/* 中间标题 */}
                <View style={styles.centerSection}>
                   {title && (
-                     <ThemedText
-                        type="defaultSemiBold"
-                        numberOfLines={1}
-                        style={[styles.title, { color: textColor }]}
-                     >
+                     <ThemedText type="defaultSemiBold" numberOfLines={1}>
                         {title}
                      </ThemedText>
                   )}
@@ -143,7 +135,7 @@ export function ResponsiveHeader({
                style={[
                   styles.divider,
                   {
-                     backgroundColor: borderColor,
+                     backgroundColor: colors.border,
                   },
                   shouldConstrainWidth && {
                      maxWidth: Layout.maxWidth[maxWidth],

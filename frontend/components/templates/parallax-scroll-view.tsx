@@ -8,7 +8,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useThemeColor } from '@/hooks/use-theme-color';
 import { useResponsive } from '@/hooks/use-responsive';
 import { Layout } from '@/constants/theme';
 
@@ -29,11 +28,10 @@ export default function ParallaxScrollView({
    headerBackgroundColor,
    maxWidth = 'md',
 }: Props) {
-   const backgroundColor = useThemeColor({}, 'background');
-   const colorScheme = useColorScheme() ?? 'light';
    const scrollRef = useAnimatedRef<Animated.ScrollView>();
    const scrollOffset = useScrollOffset(scrollRef);
    const { shouldConstrainWidth } = useResponsive();
+   const colorScheme = useColorScheme();
 
    const headerAnimatedStyle = useAnimatedStyle(() => {
       return {
@@ -59,7 +57,9 @@ export default function ParallaxScrollView({
    return (
       <Animated.ScrollView
          ref={scrollRef}
-         style={{ backgroundColor, flex: 1 }}
+         style={{
+            flex: 1,
+         }}
          scrollEventThrottle={16}
          contentContainerStyle={
             shouldConstrainWidth && styles.scrollContentCenter
@@ -77,8 +77,8 @@ export default function ParallaxScrollView({
             <Animated.View
                style={[
                   styles.header,
-                  { backgroundColor: headerBackgroundColor[colorScheme] },
                   headerAnimatedStyle,
+                  { backgroundColor: headerBackgroundColor[colorScheme] },
                ]}
             >
                {headerImage}
