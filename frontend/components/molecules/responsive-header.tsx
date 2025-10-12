@@ -75,7 +75,11 @@ export function ResponsiveHeader({
       if (onBackPress) {
          onBackPress();
       } else {
-         router.back();
+         if (router.canGoBack()) {
+            router.back();
+         } else {
+            router.replace('/');
+         }
       }
    };
 
@@ -85,7 +89,6 @@ export function ResponsiveHeader({
             styles.container,
             {
                paddingTop: insets.top,
-               borderBottomColor: borderColor,
                backgroundColor,
             },
          ]}
@@ -137,6 +140,20 @@ export function ResponsiveHeader({
                   {rightButton}
                </ThemedView>
             </ThemedView>
+
+            {/* 分割线 */}
+            <ThemedView
+               style={[
+                  styles.divider,
+                  {
+                     backgroundColor: borderColor,
+                  },
+                  shouldConstrainWidth && {
+                     maxWidth: Layout.maxWidth[maxWidth],
+                     width: '100%',
+                  },
+               ]}
+            />
          </ThemedView>
       </ThemedView>
    );
@@ -144,7 +161,7 @@ export function ResponsiveHeader({
 
 const styles = StyleSheet.create({
    container: {
-      borderBottomWidth: StyleSheet.hairlineWidth,
+      // 移除了 borderBottomWidth，改为使用单独的分割线元素
    },
    wrapper: {
       alignItems: 'center', // 在 Web 上居中内容
@@ -156,6 +173,10 @@ const styles = StyleSheet.create({
       height: 56, // 标准导航栏高度
       width: '100%',
       paddingHorizontal: Spacing.sm,
+   },
+   divider: {
+      height: StyleSheet.hairlineWidth,
+      width: '100%',
    },
    leftSection: {
       flexDirection: 'row',
