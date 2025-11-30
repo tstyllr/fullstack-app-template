@@ -7,7 +7,6 @@ A modern, production-ready backend server template combining best practices from
 ✅ **TypeScript** - Full type safety with strict mode enabled
 ✅ **Express** - Fast, unopinionated web framework
 ✅ **MySQL + Prisma** - Type-safe database access with modern ORM
-✅ **JWT Authentication** - Secure token-based authentication
 ✅ **Zod Validation** - Runtime type validation for API requests
 ✅ **Winston Logging** - Comprehensive logging with file and console output
 ✅ **CORS** - Cross-origin resource sharing support
@@ -59,7 +58,6 @@ template/
 
    Edit `.env` and configure:
    - `DATABASE_URL` - Your MySQL connection string
-   - `JWT_PRIVATE_KEY` - A secure secret key for JWT signing
    - `PORT` - Server port (default: 3000)
    - `REQUIRES_AUTH` - Enable/disable authentication (default: true)
 
@@ -85,61 +83,6 @@ template/
 
 ## API Endpoints
 
-### Authentication
-
-#### Register a new user
-
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "name": "John Doe",
-  "password": "password123"
-}
-```
-
-Response:
-
-```json
-{
-   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-   "id": 1,
-   "email": "user@example.com",
-   "name": "John Doe",
-   "isAdmin": false
-}
-```
-
-#### Login
-
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-```
-
-### Users
-
-#### Get current user
-
-```http
-GET /api/users/me
-Authorization: Bearer <your-jwt-token>
-```
-
-#### Get all users (Admin only)
-
-```http
-GET /api/users
-Authorization: Bearer <admin-jwt-token>
-```
-
 ### Health Check
 
 ```http
@@ -150,13 +93,12 @@ GET /health
 
 ### Environment Variables
 
-| Variable          | Description                          | Default       |
-| ----------------- | ------------------------------------ | ------------- |
-| `PORT`            | Server port                          | `3000`        |
-| `NODE_ENV`        | Environment (development/production) | `development` |
-| `DATABASE_URL`    | MySQL connection string              | Required      |
-| `JWT_PRIVATE_KEY` | Secret key for JWT signing           | Required      |
-| `REQUIRES_AUTH`   | Enable/disable authentication        | `true`        |
+| Variable        | Description                          | Default       |
+| --------------- | ------------------------------------ | ------------- |
+| `PORT`          | Server port                          | `3000`        |
+| `NODE_ENV`      | Environment (development/production) | `development` |
+| `DATABASE_URL`  | MySQL connection string              | Required      |
+| `REQUIRES_AUTH` | Enable/disable authentication        | `true`        |
 
 ### Database Schema
 
@@ -187,8 +129,6 @@ The template includes a basic User model. To add more models:
 
 Available middleware:
 
-- `auth` - Validates JWT token from Authorization header (Bearer scheme) and attaches user to request
-- `admin` - Requires user to have admin privileges
 - `errorHandler` - Centralized error handling
 
 ### Logging
@@ -227,8 +167,6 @@ The application uses a modular startup pattern (inspired by server1):
 
 ## Security Features
 
-- Password hashing with bcrypt
-- JWT token authentication
 - Environment variable validation
 - Admin role authorization
 - CORS protection

@@ -1,39 +1,37 @@
-import { ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-import Toast from 'react-native-toast-message';
+import { TamaguiProvider, Theme } from 'tamagui';
+import { useColorScheme } from 'react-native';
+import { QueryClientProvider } from '@tanstack/react-query';
+import config from '../tamagui.config';
+import { queryClient } from '@/lib/query-client';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { AuthProvider } from '@/components/molecules/auth-context';
-import { ThemeProvider } from '@/components/molecules/theme-context';
-import { useToastConfig } from '@/components/molecules/toast-config';
-import { nativeDarkTheme, nativeLightTheme } from '@/constants/theme';
-
-function RootLayoutNav() {
-   const colorScheme = useColorScheme();
-   const toastConfig = useToastConfig();
+function RootNavigator() {
+   // 启用自动认证跳转
+   useAuthRedirect();
 
    return (
-      <NavigationThemeProvider
-         value={colorScheme === 'dark' ? nativeDarkTheme : nativeLightTheme}
-      >
-         <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(app)" />
-         </Stack>
-         <StatusBar style="auto" />
-         <Toast config={toastConfig} />
-      </NavigationThemeProvider>
+      <Stack>
+         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+         <Stack.Screen name="+not-found" options={{ title: '页面未找到' }} />
+      </Stack>
    );
 }
 
 export default function RootLayout() {
+   const colorScheme = useColorScheme();
+
    return (
-      <ThemeProvider>
-         <AuthProvider>
-            <RootLayoutNav />
-         </AuthProvider>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+         <TamaguiProvider
+            config={config}
+            defaultTheme={colorScheme === 'dark' ? 'dark' : 'light'}
+         >
+            <Theme name={colorScheme === 'dark' ? 'dark' : 'light'}>
+               <RootNavigator />
+            </Theme>
+         </TamaguiProvider>
+      </QueryClientProvider>
    );
 }

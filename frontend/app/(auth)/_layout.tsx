@@ -1,26 +1,16 @@
-import { Redirect, Stack } from 'expo-router';
-import { useAuth } from '@/components/molecules/auth-context';
+import { Stack } from 'expo-router';
 
+/**
+ * 认证路由组布局
+ * 用于登录、注册等认证相关页面
+ * 不显示底部 Tabs 导航栏
+ */
 export default function AuthLayout() {
-   const { isAuthenticated, isLoading } = useAuth();
-
-   // Show nothing while checking authentication status
-   if (isLoading) {
-      return null;
-   }
-
-   // Redirect to main app if already authenticated
-   if (isAuthenticated) {
-      return <Redirect href={'/(app)/(tabs)' as any} />;
-   }
-
    return (
       <Stack
          screenOptions={{
             headerShown: false,
          }}
-      >
-         <Stack.Screen name="login" />
-      </Stack>
+      />
    );
 }
