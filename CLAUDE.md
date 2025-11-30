@@ -91,27 +91,6 @@ src/
 - Repositories provide Prisma-based database access
 - Startup modules in src/startup/ initialize app components (loaded dynamically in index.ts)
 
-### Frontend Architecture (frontend/)
-
-Expo app with:
-
-- **app/**: File-based routing (Expo Router)
-   - `_layout.tsx`: Root layout
-   - `(auth)/`: Authentication screens (login)
-   - `(app)/`: Main app group
-      - `_layout.tsx`: App layout wrapper
-      - `(tabs)/`: Tab-based navigation (index, settings)
-      - `settings/`: Settings screens (account.tsx, theme.tsx, change-password.tsx)
-      - `modal.tsx`: Modal screens
-- **components/**: Reusable UI components following Atomic Design
-   - **atoms/**: Basic building blocks (buttons, inputs, etc.)
-   - **molecules/**: Simple component combinations
-   - **organisms/**: Complex UI components
-   - **templates/**: Page-level layouts
-- **constants/**: App-wide constants (theme configuration, spacing, typography)
-- **hooks/**: Custom React hooks
-- **assets/**: Images, fonts, etc.
-
 ### Database (backend/prisma/)
 
 - **schema.prisma**: Defines User, RefreshToken, VerificationCode, ChatMessage models
@@ -131,10 +110,6 @@ Expo app with:
    - `REQUIRES_AUTH`: Enable/disable auth (default: true)
    - SMS API credentials (Tencent Cloud): `SMS_APP_ID`, `SMS_APP_KEY`, `SMS_TEMPLATE_ID`, `SMS_SIGN_NAME`
 
-**Frontend**:
-
-- Standard Expo configuration via app.json
-
 ### Git Hooks
 
 - **pre-commit**: Runs lint-staged → Prettier formatting on staged files
@@ -144,7 +119,6 @@ Expo app with:
 
 - Backend runs on Bun runtime with hot reload (--watch flag)
 - Backend testing with Bun's built-in test runner (bun test)
-- Frontend uses Expo development server with Fast Refresh
 - Prisma Studio available for database inspection (bun run db:studio)
 - Type checking available for both frontend and backend via `bun run tc`
 
@@ -159,30 +133,3 @@ Expo app with:
 5. Create controller in src/controllers/ with Zod validation
 6. Create routes in src/routes/
 7. Register routes in src/startup/routes.ts
-
-### Frontend
-
-1. Add screens in app/ directory (file-based routing)
-2. Create components following Atomic Design pattern:
-   - atoms/ for basic elements
-   - molecules/ for simple combinations
-   - organisms/ for complex components
-   - templates/ for page layouts
-3. Use themed components for consistent styling and dark mode compatibility
-4. Update theme constants in constants/theme.ts if needed
-5. Expo Router handles navigation automatically based on file structure
-
-## Important Notes
-
-- **Runtime**: Backend uses Bun, not Node.js (faster execution, native TypeScript support)
-- **Logging**: Winston logger available via `import { logger } from './utils/logger.js'`
-- **Error Handling**: Centralized error handler in middleware, logs to logs/ directory
-- **Prisma Output**: Custom output path at backend/generated/prisma (not default node_modules)
-- **TypeScript**: Strict mode enabled, uses ESNext with bundler module resolution
-- Frontend is a Universal React Native application (Android, iOS, and web) built with Expo
-- The frontend must be compatible with dark mode
-- This project does not support internationalization; it requires Chinese language support
-- **Frontend Styling**: Never hardcode `margin`, `padding`, `borderRadius`, typography, or colors—always use theme constants from `constants/theme.ts` (`Spacing`, `BorderRadius`, `Typography`, `Colors`, `Layout`, `Fonts`)
-- **Frontend Components**: Prefer themed components (`ThemedText`, `ThemedButton`, `ThemedInput`) over React Native primitives (`Text`, `Button`, `TextInput`) for unified theme management and dark mode support
-- **Frontend Icons**: Use `IconSymbol` component for platform-native icons (iOS, Android, Web) without bundling additional assets
-- **Responsive Design**: Use `Layout.maxWidth` and `Layout.breakpoints` from theme constants for responsive web layouts
