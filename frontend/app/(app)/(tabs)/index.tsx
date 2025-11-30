@@ -1,10 +1,10 @@
 import { ResponsiveContainer } from '@/components/atoms/responsive-container';
-import ChatBot from '@/components/organisms/ChatBot';
+import { View } from 'react-native';
 
 export default function HomeScreen() {
    return (
       <ResponsiveContainer>
-         <ChatBot />
+         <View></View>
       </ResponsiveContainer>
    );
 }

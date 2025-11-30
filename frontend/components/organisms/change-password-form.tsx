@@ -6,8 +6,6 @@ import { z } from 'zod';
 import { ThemedInput } from '@/components/atoms/themed-input';
 import { ThemedButton } from '@/components/atoms/themed-button';
 import { Spacing } from '@/constants/theme';
-import { sendCode } from '@/lib/api/auth';
-import { showApiError, showSuccess } from '@/lib/utils';
 
 // 表单数据类型
 interface FormData {
@@ -90,18 +88,7 @@ export function ChangePasswordForm({
 
    // 发送验证码
    const handleSendCode = async () => {
-      if (isSending || countdown > 0) return;
-
-      try {
-         setIsSending(true);
-         await sendCode({ phone });
-         setCountdown(60);
-         showSuccess({ title: '验证码已发送，请注意查收' });
-      } catch (error: any) {
-         showApiError(error, '发送验证码失败');
-      } finally {
-         setIsSending(false);
-      }
+      // todo...
    };
 
    return (

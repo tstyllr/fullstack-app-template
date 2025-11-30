@@ -80,7 +80,6 @@ src/
 ├── routes/          # API route definitions (auth, users, chat)
 ├── middleware/      # auth, admin, errorHandler
 ├── startup/         # Modular initialization (logging, cors, db, config, routes)
-├── llm/             # LLM integration (OpenAI client)
 ├── types/           # TypeScript type definitions
 └── utils/           # Shared utilities (logger)
 ```
@@ -125,14 +124,12 @@ Expo app with:
 
 **Backend** (uses @dotenvx/dotenvx):
 
-- Environment-specific files: `.env` (default), `.env.development`, `.env.production`, `.env.test`
+- Environment-specific files: `.env` (default)
 - Key variables:
    - `DATABASE_URL`: MySQL connection string
-   - `JWT_PRIVATE_KEY`: Secret for JWT signing
    - `PORT`: Server port (default: 3000)
    - `REQUIRES_AUTH`: Enable/disable auth (default: true)
    - SMS API credentials (Tencent Cloud): `SMS_APP_ID`, `SMS_APP_KEY`, `SMS_TEMPLATE_ID`, `SMS_SIGN_NAME`
-   - OpenAI configuration: `OPENAI_API_KEY`, `OPENAI_BASE_URL`
 
 **Frontend**:
 
@@ -142,25 +139,6 @@ Expo app with:
 
 - **pre-commit**: Runs lint-staged → Prettier formatting on staged files
 - Configuration in .lintstagedrc
-
-## Authentication & Security
-
-Backend implements phone-based authentication:
-
-- JWT token authentication (Bearer scheme)
-- Verification codes sent via Tencent Cloud SMS
-- Password hashing with bcrypt
-- Middleware: `auth` (validates JWT), `admin` (requires admin role)
-- RefreshToken model for token rotation
-
-## LLM Integration
-
-Backend includes OpenAI integration:
-
-- LLM client in `src/llm/client.ts`
-- Chat API endpoint at `/api/chat`
-- ChatMessage model stores conversation history with conversationId grouping
-- Messages support system, user, and assistant roles
 
 ## Testing & Development
 

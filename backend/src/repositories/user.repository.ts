@@ -1,25 +1,26 @@
 import { prisma } from '../startup/db.js';
-import { type User } from '../../generated/prisma';
+import { type User, type Role } from '../../generated/prisma';
 
 export const userRepository = {
    async createUser(data: {
-      phone: string;
+      phoneNumber: string;
+      email: string;
       name?: string;
       password?: string;
-      isAdmin?: boolean;
+      role?: Role;
    }): Promise<User> {
       return await prisma.user.create({
          data,
       });
    },
 
-   async getUserByPhone(phone: string): Promise<User | null> {
+   async getUserByPhone(phoneNumber: string): Promise<User | null> {
       return await prisma.user.findUnique({
-         where: { phone },
+         where: { phoneNumber },
       });
    },
 
-   async getUserById(id: number): Promise<User | null> {
+   async getUserById(id: string): Promise<User | null> {
       return await prisma.user.findUnique({
          where: { id },
       });
@@ -27,12 +28,14 @@ export const userRepository = {
 
    async getAdmin(): Promise<User | null> {
       return await prisma.user.findFirst({
-         where: { isAdmin: true },
+         where: {
+            role: 'ADMIN',
+         },
       });
    },
 
    async updateUser(
-      id: number,
+      id: string,
       data: { name?: string; password?: string }
    ): Promise<User> {
       return await prisma.user.update({
@@ -45,9 +48,95 @@ export const userRepository = {
       return await prisma.user.findMany({
          select: {
             id: true,
-            phone: true,
+            phoneNumber: true,
+            phoneNumberVerified: true,
+            email: true,
+            emailVerified: true,
             name: true,
-            isAdmin: true,
+            image: true,
+            role: true,
+            isSuspended: true,
+            suspendedAt: true,
+            suspendedReason: true,
+            createdAt: true,
+            updatedAt: true,
+         },
+      });
+   },
+
+   async updateUserRole(id: string, role: Role): Promise<User> {
+      return await prisma.user.update({
+         where: { id },
+         data: {
+            role,
+         },
+      });
+   },
+
+   async suspendUser(id: string, reason?: string): Promise<User> {
+      return await prisma.user.update({
+         where: { id },
+         data: {
+            isSuspended: true,
+            suspendedAt: new Date(),
+            suspendedReason: reason,
+         },
+      });
+   },
+
+   async unsuspendUser(id: string): Promise<User> {
+      return await prisma.user.update({
+         where: { id },
+         data: {
+            isSuspended: false,
+            suspendedAt: null,
+            suspendedReason: null,
+         },
+      });
+   },
+
+   async deleteUser(id: string): Promise<User> {
+      return await prisma.user.delete({
+         where: { id },
+      });
+   },
+
+   async getUsersByRole(role: Role): Promise<Omit<User, 'password'>[]> {
+      return await prisma.user.findMany({
+         where: { role },
+         select: {
+            id: true,
+            phoneNumber: true,
+            phoneNumberVerified: true,
+            email: true,
+            emailVerified: true,
+            name: true,
+            image: true,
+            role: true,
+            isSuspended: true,
+            suspendedAt: true,
+            suspendedReason: true,
+            createdAt: true,
+            updatedAt: true,
+         },
+      });
+   },
+
+   async getSuspendedUsers(): Promise<Omit<User, 'password'>[]> {
+      return await prisma.user.findMany({
+         where: { isSuspended: true },
+         select: {
+            id: true,
+            phoneNumber: true,
+            phoneNumberVerified: true,
+            email: true,
+            emailVerified: true,
+            name: true,
+            image: true,
+            role: true,
+            isSuspended: true,
+            suspendedAt: true,
+            suspendedReason: true,
             createdAt: true,
             updatedAt: true,
          },
