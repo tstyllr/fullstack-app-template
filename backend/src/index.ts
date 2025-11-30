@@ -1,4 +1,12 @@
-import '@dotenvx/dotenvx/config';
+import { config } from '@dotenvx/dotenvx';
+
+// Load environment variables based on NODE_ENV
+config({
+   path: [
+      `.env.${process.env.NODE_ENV}`, // .env.development
+   ],
+});
+
 import express from 'express';
 import { logger } from './utils/logger.js';
 

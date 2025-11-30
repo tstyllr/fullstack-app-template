@@ -11,9 +11,9 @@
       "test": "NODE_ENV=test bun test",
       "test:watch": "NODE_ENV=test bun test --watch",
       "tc": "bunx tsc",
-      "db:migrate": "bunx prisma migrate dev",
-      "db:generate": "bunx prisma generate",
-      "db:studio": "bunx prisma studio"
+      "db:migrate": "dotenvx run -f .env.development -- bunx prisma migrate dev",
+      "db:generate": "dotenvx run -f .env.development -- bunx prisma generate",
+      "db:studio": "dotenvx run -f .env.development -- bunx prisma studio"
    },
    "keywords": [
       "express",
