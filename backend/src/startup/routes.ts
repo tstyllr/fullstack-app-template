@@ -3,6 +3,7 @@ import { toNodeHandler } from 'better-auth/node';
 import { errorHandler } from '../middleware/error.js';
 import { auth } from '../lib/auth.js';
 import usersRouter from '../routes/users.js';
+import chatRouter from '../routes/chat.js';
 
 export default function (app: Express) {
    // Mount Better Auth handler BEFORE express.json() middleware
@@ -18,6 +19,7 @@ export default function (app: Express) {
    });
 
    app.use('/api/users', usersRouter);
+   app.use('/api/chat', chatRouter);
 
    // Error handling middleware (must be last)
    app.use(errorHandler);
