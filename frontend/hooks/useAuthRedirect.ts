@@ -7,7 +7,7 @@ import { useSession } from '@/lib/auth-client';
  *
  * 功能：
  * 1. 未认证用户访问任何页面 → 自动跳转到 /login
- * 2. 已认证用户访问 /login 页面 → 自动跳转到主页 /(tabs)
+ * 2. 已认证用户访问 /login 页面 → 自动跳转到主页 /(app)
  *
  * 在根布局中调用此 Hook 即可实现全局导航守卫
  */
@@ -28,7 +28,7 @@ export function useAuthRedirect() {
          router.replace('/login');
       } else if (session && inAuthGroup) {
          // 已认证用户 && 在认证页面 → 跳转到主页
-         router.replace('/(tabs)');
+         router.replace('/(app)');
       }
    }, [session, isPending, segments, router]);
 

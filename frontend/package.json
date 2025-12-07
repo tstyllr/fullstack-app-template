@@ -14,6 +14,7 @@
       "@better-auth/expo": "^1.4.3",
       "@hookform/resolvers": "^5.2.2",
       "@react-native-async-storage/async-storage": "^2.2.0",
+      "@react-navigation/drawer": "^7.7.8",
       "@tamagui/animations-react-native": "^1.138.6",
       "@tamagui/config": "^1.138.6",
       "@tamagui/lucide-icons": "^1.138.6",

@@ -13,7 +13,7 @@ function RootNavigator() {
    return (
       <Stack>
          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+         <Stack.Screen name="(app)" options={{ headerShown: false }} />
          <Stack.Screen name="+not-found" options={{ title: '页面未找到' }} />
       </Stack>
    );
