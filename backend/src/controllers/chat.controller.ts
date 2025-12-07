@@ -12,8 +12,10 @@ const createConversationSchema = z.object({
    title: z.string().max(255).optional(),
 });
 
+// AI SDK UIMessage format schema
+// Using z.any() for messages since UIMessage is a complex discriminated union type
 const sendMessageSchema = z.object({
-   message: z.string().min(1).max(10000),
+   messages: z.array(z.any()).min(1),
 });
 
 const updateConversationSchema = z.object({
@@ -242,22 +244,68 @@ export const chatController = {
          const { id } = req.params;
          const body = sendMessageSchema.parse(req.body);
 
-         // Get conversation to determine model
+         // Validate that there are messages
+         if (body.messages.length === 0) {
+            return res.status(400).json({ error: 'Messages array is empty' });
+         }
+
+         // Validate that the last message is from the user
+         const lastMessage = body.messages[body.messages.length - 1];
+         if (!lastMessage || lastMessage.role !== 'user') {
+            return res.status(400).json({
+               error: 'Last message must be from user',
+            });
+         }
+
+         // Extract content from the last message
+         // Support both AI SDK formats:
+         // 1. Standard format: { content: string | array }
+         // 2. AI SDK 4.2+ format: { parts: [{ type: 'text', text: string }] }
+         let content = '';
+
+         if (lastMessage.content) {
+            // Standard format with content field
+            content =
+               typeof lastMessage.content === 'string'
+                  ? lastMessage.content
+                  : lastMessage.content?.[0]?.text || '';
+         } else if (lastMessage.parts) {
+            // AI SDK 4.2+ format with parts array
+            content = lastMessage.parts
+               .filter((part: any) => part.type === 'text')
+               .map((part: any) => part.text)
+               .join('');
+         }
+
+         // Validate message length
+         if (!content || content.length === 0) {
+            return res
+               .status(400)
+               .json({ error: 'Message content is required' });
+         }
+
+         if (content.length > 10000) {
+            return res.status(400).json({
+               error: 'Message content exceeds maximum length of 10000 characters',
+            });
+         }
+
+         // Get conversation to verify ownership and get model
          const conversation = await conversationService.getConversation(
             id!,
             req.user.id
          );
 
-         // Stream chat completion
+         // Stream chat completion with full message history
          const result = await chatService.streamChatCompletion(
             id!,
             req.user.id,
-            body.message,
+            body.messages,
             conversation.model
          );
 
-         // Convert to streaming response
-         return result.toUIMessageStreamResponse();
+         // Pipe the stream to the response
+         result.pipeUIMessageStreamToResponse(res);
       } catch (error) {
          if (error instanceof z.ZodError) {
             return res.status(400).json({

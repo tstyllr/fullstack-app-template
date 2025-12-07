@@ -1,4 +1,4 @@
-import { streamText, generateText } from 'ai';
+import { streamText, generateText, convertToModelMessages } from 'ai';
 import {
    createModelWithUsage,
    getTitleGenerationModel,
@@ -11,12 +11,12 @@ import type { ChatMessage, MessageRole } from '../types/chat.js';
 export class ChatService {
    /**
     * Stream chat completion
-    * Returns a streamText result that can be converted to a Response
+    * Returns a streamText result that can be converted to a UIMessageStreamResponse
     */
    static async streamChatCompletion(
       conversationId: string,
       userId: string,
-      userMessage: string,
+      messages: any[], // UIMessage type is complex, using any for flexibility
       model: string
    ) {
       try {
@@ -32,21 +32,13 @@ export class ChatService {
             throw new Error('Unauthorized access to conversation');
          }
 
-         // Get conversation history
-         const messages =
+         // Get previous message count for title generation
+         const previousMessages =
             await messageRepository.getConversationMessages(conversationId);
+         const previousMessageCount = previousMessages.length;
 
-         // Build message history for AI
-         const chatHistory: ChatMessage[] = messages.map((msg) => ({
-            role: msg.role as MessageRole,
-            content: msg.content,
-         }));
-
-         // Add new user message to history
-         chatHistory.push({
-            role: 'user' as MessageRole,
-            content: userMessage,
-         });
+         // Convert UIMessages to model messages format
+         const modelMessages = convertToModelMessages(messages);
 
          // Create model with usage tracking
          const aiModel = createModelWithUsage(model);
@@ -54,30 +46,44 @@ export class ChatService {
          // Stream the response
          const result = streamText({
             model: aiModel,
-            messages: chatHistory,
+            messages: modelMessages,
             maxOutputTokens: 4096,
-         });
+            onFinish: async ({ text, usage, response }) => {
+               // Save all messages from the conversation
+               await this.saveMessages(conversationId, messages, text, usage);
 
-         // Save user message immediately
-         await messageRepository.createMessage({
-            conversationId,
-            role: 'user',
-            content: userMessage,
-         });
+               // Auto-generate title if this is one of the first messages
+               if (previousMessageCount >= 1 && previousMessageCount <= 3) {
+                  this.generateConversationTitle(conversationId).catch(
+                     (error) => {
+                        logger.error('Failed to generate conversation title', {
+                           conversationId,
+                           error:
+                              error instanceof Error
+                                 ? error.message
+                                 : 'Unknown error',
+                        });
+                     }
+                  );
+               }
 
-         // Handle completion in background
-         this.handleStreamCompletion(
-            result,
-            conversationId,
-            userId,
-            messages.length
-         );
+               logger.info('Chat stream completed', {
+                  conversationId,
+                  userId,
+                  usage: {
+                     promptTokens: usage.inputTokens,
+                     completionTokens: usage.outputTokens,
+                     totalTokens: usage.totalTokens,
+                  },
+               });
+            },
+         });
 
          logger.info('Chat stream initiated', {
             conversationId,
             userId,
             model,
-            messageCount: chatHistory.length,
+            messageCount: messages.length,
          });
 
          return result;
@@ -92,23 +98,61 @@ export class ChatService {
    }
 
    /**
-    * Handle stream completion - save assistant response and usage data
+    * Save messages to database after streaming completes
     */
-   private static async handleStreamCompletion(
-      result: Awaited<ReturnType<typeof streamText>>,
+   private static async saveMessages(
       conversationId: string,
-      userId: string,
-      previousMessageCount: number
+      uiMessages: any[],
+      assistantResponse: string,
+      usage: any
    ) {
       try {
-         // Wait for stream to complete
-         const [text, usage] = await Promise.all([result.text, result.usage]);
+         // Get existing messages to avoid duplicates
+         const existingMessages =
+            await messageRepository.getConversationMessages(conversationId);
+         const existingCount = existingMessages.length;
+
+         // Only save new user messages (those not already in DB)
+         const newUserMessages = uiMessages
+            .filter((msg) => msg.role === 'user')
+            .slice(existingCount / 2); // Assuming alternating user/assistant pattern
+
+         // Save new user messages
+         for (const msg of newUserMessages) {
+            // Extract content from UIMessage
+            // Support both AI SDK formats:
+            // 1. Standard format: { content: string | array }
+            // 2. AI SDK 4.2+ format: { parts: [{ type: 'text', text: string }] }
+            let content = '';
+
+            if (msg.content) {
+               // Standard format with content field
+               content =
+                  typeof msg.content === 'string'
+                     ? msg.content
+                     : msg.content?.[0]?.text || '';
+            } else if (msg.parts) {
+               // AI SDK 4.2+ format with parts array
+               content = msg.parts
+                  .filter((part: any) => part.type === 'text')
+                  .map((part: any) => part.text)
+                  .join('');
+            }
+
+            if (content) {
+               await messageRepository.createMessage({
+                  conversationId,
+                  role: 'user',
+                  content,
+               });
+            }
+         }
 
          // Save assistant response
          await messageRepository.createMessage({
             conversationId,
             role: 'assistant',
-            content: text,
+            content: assistantResponse,
             tokenCount: usage.outputTokens,
          });
 
@@ -121,33 +165,12 @@ export class ChatService {
                usage.totalTokens ??
                (usage.inputTokens ?? 0) + (usage.outputTokens ?? 0),
          });
-
-         logger.info('Chat stream completed', {
-            conversationId,
-            userId,
-            usage: {
-               promptTokens: usage.inputTokens,
-               completionTokens: usage.outputTokens,
-               totalTokens: usage.totalTokens,
-            },
-         });
-
-         // Auto-generate title if this is one of the first messages
-         if (previousMessageCount >= 1 && previousMessageCount <= 3) {
-            this.generateConversationTitle(conversationId).catch((error) => {
-               logger.error('Failed to generate conversation title', {
-                  conversationId,
-                  error:
-                     error instanceof Error ? error.message : 'Unknown error',
-               });
-            });
-         }
       } catch (error) {
-         logger.error('Failed to handle stream completion', {
+         logger.error('Failed to save messages', {
             conversationId,
-            userId,
             error: error instanceof Error ? error.message : 'Unknown error',
          });
+         throw error;
       }
    }
 
