@@ -10,7 +10,7 @@ export default function NotFoundScreen() {
          justifyContent="center"
          alignItems="center"
          padding="$4"
-         space="$4"
+         gap="$4"
       >
          <H1 fontSize="$10">404</H1>
          <Text fontSize="$6" color="$gray11">

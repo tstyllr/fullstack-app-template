@@ -20,13 +20,13 @@ export default function SettingsScreen() {
    return (
       <ScrollView backgroundColor="$background">
          <YStack flex={1} paddingHorizontal="$4" paddingTop="$6">
-            <YStack space="$4">
+            <YStack gap="$4">
                <H1>设置</H1>
 
-               <YStack space="$3">
+               <YStack gap="$3">
                   <Card bordered padding="$4">
                      <XStack justifyContent="space-between" alignItems="center">
-                        <XStack space="$3" alignItems="center" flex={1}>
+                        <XStack gap="$3" alignItems="center" flex={1}>
                            {colorScheme === 'dark' ? (
                               <Moon size={24} color="$blue10" />
                            ) : (
@@ -46,7 +46,7 @@ export default function SettingsScreen() {
 
                   <Card bordered padding="$4">
                      <XStack justifyContent="space-between" alignItems="center">
-                        <XStack space="$3" alignItems="center" flex={1}>
+                        <XStack gap="$3" alignItems="center" flex={1}>
                            <Info size={24} color="$gray10" />
                            <YStack flex={1}>
                               <Text fontWeight="bold">通知</Text>
@@ -66,7 +66,7 @@ export default function SettingsScreen() {
                   </Card>
 
                   <Card bordered padding="$4" backgroundColor="$blue2">
-                     <YStack space="$2">
+                     <YStack gap="$2">
                         <Text fontWeight="bold" color="$blue11">
                            关于本应用
                         </Text>

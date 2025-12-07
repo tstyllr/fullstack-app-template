@@ -42,7 +42,7 @@ export default function HomeScreen() {
             paddingTop="$6"
             paddingBottom="$6"
          >
-            <YStack space="$4">
+            <YStack gap="$4">
                <H1>欢迎使用 Tamagui</H1>
                <Text color="$gray11" fontSize="$5">
                   一个全栈应用模板，支持 iOS、Android 和 Web
@@ -69,11 +69,11 @@ export default function HomeScreen() {
                   </Card>
                </Animated.View>
 
-               <YStack space="$3">
+               <YStack gap="$3">
                   <H2>功能特性</H2>
 
                   <Card bordered padding="$3">
-                     <XStack space="$3" alignItems="center">
+                     <XStack gap="$3" alignItems="center">
                         <Heart size={24} color="$red10" />
                         <YStack flex={1}>
                            <Text fontWeight="bold">Tamagui UI</Text>
@@ -85,7 +85,7 @@ export default function HomeScreen() {
                   </Card>
 
                   <Card bordered padding="$3">
-                     <XStack space="$3" alignItems="center">
+                     <XStack gap="$3" alignItems="center">
                         <Star size={24} color="$yellow10" />
                         <YStack flex={1}>
                            <Text fontWeight="bold">Expo Router</Text>
@@ -97,7 +97,7 @@ export default function HomeScreen() {
                   </Card>
 
                   <Card bordered padding="$3">
-                     <XStack space="$3" alignItems="center">
+                     <XStack gap="$3" alignItems="center">
                         <Zap size={24} color="$blue10" />
                         <YStack flex={1}>
                            <Text fontWeight="bold">动画支持</Text>

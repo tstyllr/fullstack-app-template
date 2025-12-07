@@ -30,6 +30,10 @@ bun run android    # Android emulator
 bun run tc         # Run TypeScript compiler without emit
 ```
 
+## Tamagui guideline
+
+@.docs/tamagui-guideline.md
+
 ## Project Architecture
 
 ### Routing Structure (Expo Router v6)
@@ -54,16 +58,19 @@ app/
 ### Authentication Flow
 
 **Better Auth Integration**:
+
 - Auth client configured in `lib/auth-client.ts`
 - Uses `@better-auth/expo` plugin with SecureStore for token storage
 - Backend API base URL from `EXPO_PUBLIC_API_URL` env var (defaults to `http://localhost:3000` in dev)
 
 **Auto Navigation Guard** (`hooks/useAuthRedirect.ts`):
+
 - Called in root `_layout.tsx`
 - Unauthenticated users → redirected to `/login`
 - Authenticated users accessing `/login` → redirected to `/(tabs)`
 
 **Session Management**:
+
 - `useSession()` hook from Better Auth React client
 - Session stored in Expo SecureStore
 - App scheme: `fullstackapp` (matches `app.json`)
@@ -91,6 +98,7 @@ EXPO_PUBLIC_API_URL=http://localhost:3000  # Backend API URL
 ```
 
 **Important**:
+
 - Use `EXPO_PUBLIC_*` prefix for variables accessed in client code
 - For real devices in dev, replace `localhost` with your computer's LAN IP address
 - In production, set this to your actual API domain
@@ -98,17 +106,20 @@ EXPO_PUBLIC_API_URL=http://localhost:3000  # Backend API URL
 ## Key Architectural Patterns
 
 ### Component Structure
+
 - UI components in `components/ui/`
 - Page components in `app/` (Expo Router)
 - Shared hooks in `hooks/`
 - Shared utilities/config in `lib/`
 
 ### Better Auth Configuration
+
 - Client uses `expoClient` plugin with SecureStore
 - Storage prefix: `fullstackapp_auth`
 - Scheme must match `app.json` for OAuth redirects
 
 ### Theme System
+
 - Tamagui auto-detects system color scheme (light/dark)
 - Config in `tamagui.config.ts`
 - Uses system fonts (SF Pro on iOS, Roboto on Android)
@@ -133,12 +144,12 @@ EXPO_PUBLIC_API_URL=http://localhost:3000  # Backend API URL
 import { useSession } from '@/lib/auth-client';
 
 function MyComponent() {
-  const { data: session, isPending } = useSession();
+   const { data: session, isPending } = useSession();
 
-  if (isPending) return <LoadingSpinner />;
-  if (!session) return <LoginPrompt />;
+   if (isPending) return <LoadingSpinner />;
+   if (!session) return <LoginPrompt />;
 
-  return <AuthenticatedContent user={session.user} />;
+   return <AuthenticatedContent user={session.user} />;
 }
 ```
 
@@ -150,23 +161,27 @@ Better Auth handles authentication endpoints automatically. For custom API calls
 import { useQuery } from '@tanstack/react-query';
 
 const { data } = useQuery({
-  queryKey: ['myData'],
-  queryFn: async () => {
-    const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/my-endpoint`);
-    return res.json();
-  }
+   queryKey: ['myData'],
+   queryFn: async () => {
+      const res = await fetch(
+         `${process.env.EXPO_PUBLIC_API_URL}/api/my-endpoint`
+      );
+      return res.json();
+   },
 });
 ```
 
 ## Backend Integration
 
 The frontend connects to a Node.js/Express backend with:
+
 - Better Auth server (`/api/auth/*` endpoints)
 - MySQL database via Prisma
 - Phone number + SMS OTP authentication
 - Session-based auth with httpOnly cookies
 
 **Auth Endpoints** (handled by Better Auth):
+
 - `POST /api/auth/phone-number/send-otp` - Send SMS code
 - `POST /api/auth/phone-number/verify` - Verify code & login
 - `POST /api/auth/sign-in/phone-number` - Password login
@@ -176,20 +191,24 @@ The frontend connects to a Node.js/Express backend with:
 ## Important Notes
 
 ### TypeScript
+
 - Strict mode enabled in `tsconfig.json`
 - Fix type errors or temporarily disable strict mode if blocking development
 - Run `bun run tc` frequently to catch type issues
 
 ### Platform-Specific Considerations
+
 - **iOS**: Requires Mac with Xcode for native builds
 - **Android**: Requires Android Studio and SDK
 - **Web**: Works on any browser, best for quick testing
 
 ### Path Aliases
+
 - `@/` maps to root directory (configured in `tsconfig.json`)
 - Example: `import { useSession } from '@/lib/auth-client'`
 
 ### Expo Router Conventions
+
 - `_layout.tsx` = Layout component (wraps child routes)
 - `+not-found.tsx` = 404 page
 - `index.tsx` = Default route in directory
@@ -205,6 +224,7 @@ The frontend connects to a Node.js/Express backend with:
 ## Monorepo Context
 
 This frontend is part of a Bun workspace monorepo:
+
 - Root `package.json` defines workspace: `["./backend", "./frontend"]`
 - Shared dev dependencies (Prettier, Husky) at root level
 - Run `bun run dev` from root to start both backend and frontend concurrently

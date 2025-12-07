@@ -22,7 +22,7 @@ export function FeatureCard({
          animation="quick"
          hoverStyle={{ borderColor: '$blue8' }}
       >
-         <XStack space="$3" alignItems="center">
+         <XStack gap="$3" alignItems="center">
             {icon}
             <YStack flex={1}>
                <Text fontWeight="bold">{title}</Text>
